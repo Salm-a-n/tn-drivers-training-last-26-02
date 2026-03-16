@@ -13,6 +13,10 @@ import InstructorFleet from "../pages/Instructors";
 import FleetManagement from "../pages/Fleetmanagement";
 import Finances from "../pages/Finances";
 import Settings from "../pages/Settings";
+import Login from "../pages/Login";
+import LandingPage from "../pages/LandingPage";
+import ResetPassword from "../pages/ResetPassword";
+
 // ... other admin imports
 
 // Instructor Pages
@@ -25,18 +29,21 @@ import InstructorExpenses from "../pages/instructor/MyExpenses";
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       {/* ADMIN ROUTES */}
       <Route element={<AdminLayout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/students" element={<StudentPage />} />
-        <Route path="/packages" element={<Packages />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/payments" element={<Payments />} />
-        <Route path="/applications" element={<Application />} />
-        <Route path="/instructors" element={<InstructorFleet />} />
-        <Route path="/fleet" element={<FleetManagement />} />
-        <Route path="/finances" element={<Finances />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/admin" element={<Dashboard />} />
+        <Route path="/admin/students" element={<StudentPage />} />
+        <Route path="/admin/packages" element={<Packages />} />
+        <Route path="/admin/schedule" element={<Schedule />} />
+        <Route path="/admin/payments" element={<Payments />} />
+        <Route path="/admin/applications" element={<Application />} />
+        <Route path="/admin/instructors" element={<InstructorFleet />} />
+        <Route path="/admin/fleet" element={<FleetManagement />} />
+        <Route path="/admin/finances" element={<Finances />} />
+        <Route path="/admin/settings" element={<Settings />} />
       </Route>
 
       {/* INSTRUCTOR ROUTES */}

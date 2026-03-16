@@ -26,17 +26,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   };
 
   const menuItems = [
-    { name: "Dashboard", icon: "dashboard", path: "/" },
-    { name: "Applications", icon: "assignment", path: "/applications" },
-    { name: "Students", icon: "group", path: "/students" },
-    { name: "Instructors", icon: "badge", path: "/instructors" },
-    { name: "fleet", icon: "directions_car", path: "/fleet" },
-    { name: "Packages", icon: "inventory_2", path: "/packages" },
-    { name: "Schedule", icon: "calendar_today", path: "/schedule" },
+    { name: "Dashboard", icon: "dashboard", path: "/admin" },
+    { name: "Applications", icon: "assignment", path: "/admin/applications" },
+    { name: "Students", icon: "group", path: "/admin/students" },
+    { name: "Instructors", icon: "badge", path: "/admin/instructors" },
+    { name: "fleet", icon: "directions_car", path: "/admin/fleet" },
+    { name: "Packages", icon: "inventory_2", path: "/admin/packages" },
+    { name: "Schedule", icon: "calendar_today", path: "/admin/schedule" },
     // { name: "Attendance", icon: "fact_check", path: "/attendance" },
     // { name: "Tests", icon: "quiz", path: "/tests" },
-    { name: "Payments", icon: "payments", path: "/payments" },
-    { name: "Expenses", icon: "receipt_long", path: "/finances" },
+    { name: "Payments", icon: "payments", path: "/admin/payments" },
+    { name: "Expenses", icon: "receipt_long", path: "/admin/finances" },
   ];
 
 
@@ -131,7 +131,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
           {/* SETTINGS - Updated to use NavLink */}
           <NavLink 
-            to="/settings"
+            to="/admin/settings"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
               `${
