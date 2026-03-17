@@ -1,348 +1,1229 @@
-import React, { useState } from "react";
-import { Mail, CheckCircle, XCircle, Award } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { 
+  Mail, Loader2, Calendar, Clock, 
+  CreditCard, Award, User, ShieldCheck, 
+  AlertCircle, PlusCircle, Check, DollarSign,
+  MapPin, Phone, BookOpen, Hash, FileText,
+  CreditCard as CardIcon, Calendar as CalendarIcon,
+  UserCircle, Download, Edit, Trash2, MessageCircle, X, Save
+} from "lucide-react";
 
-export default function StudentDetailView({ student, onClose }) {
-  if (!student) return null;
+export default function StudentDetailView({ studentId, onClose }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("Overview");
+  const [scheduleTab, setScheduleTab] = useState("attendance");
   const [isEditing, setIsEditing] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState("");
+  const [editFormData, setEditFormData] = useState({});
 
-  // Local state to simulate real-time updates
-  const [localStudent, setLocalStudent] = useState(student);
+  // Payment Form State
+  const [payLoading, setPayLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    amount_total: "",
+    payment_method: "Cash",
+    transaction_id: "", 
+    status: "succeeded",
+  });
 
-  const formatCAD = (amount) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(amount);
+  // Dummy student data
+  const dummyStudentData = {
+    id: studentId || 1,
+    name: "John Smith",
+    email: "john.smith@email.com",
+    phone: "(709) 555-0123",
+    status: "active",
+    isActive: true,
+    profile_picture: null,
+    permit_number: "P1234567",
+    location: "St. John's",
+    locationName: "St. John's",
+    province: "NL",
+    packageName: "Full G License Bundle",
+    packageAmount: 1200,
+    totalPackageAmount: "1200.00",
+    totalPaid: "450.00",
+    balanceCAD: "750.00",
+    paymentStatus: "Balance Due",
+    hoursLogged: 8,
+    totalHours: 20,
+    instructor: "Marc-André LeBlanc",
+    instructorName: "Marc-André LeBlanc",
+    instructorEmail: "marc.leblanc@terranova.com",
+    instructorPhone: "(709) 555-9876",
+    licenseClass: "Class 5",
+    
+    // Address fields for editing
+    street_address: "123 Main Street",
+    appartment: "Apt 4B",
+    city: "St. John's",
+    postal_code: "A1B 2C3",
+    state: "NL",
+    country: "Canada",
+    parent_name: "Robert Smith",
+    parent_email: "robert.smith@email.com",
+    parent_phone: "(709) 555-4567",
+    experience: "2 years driving experience",
+    additional_notes: "Student prefers evening lessons",
+    
+    // Foreign license
+    has_foreign_license: true,
+    foreign_license_number: "FOREIGN12345",
+    foreign_street_address: "456 Park Avenue",
+    foreign_appartment: "12C",
+    foreign_city: "London",
+    foreign_state: "Greater London",
+    foreign_postal_code: "SW1A 1AA",
+    foreign_country: "United Kingdom",
 
-  // --- EMAIL REMINDER LOGIC ---
-  const sendReminderEmail = () => {
-    const subject = encodeURIComponent(`Payment Reminder: ${localStudent.name} - Driving Academy`);
-    const body = encodeURIComponent(
-      `Hi ${localStudent.name},\n\n` +
-      `This is a friendly reminder regarding your outstanding balance of ${formatCAD(localStudent.balanceCAD)}.\n\n` +
-      `Current Status: ${localStudent.paymentStatus}\n` +
-      `Remaining Balance: ${formatCAD(localStudent.balanceCAD)}\n\n` +
-      `Please arrange for payment at your earliest convenience to avoid any session disruptions.\n\n` +
-      `Best regards,\n` +
-      `Driving Academy Admin`
-    );
-    window.location.href = `mailto:${localStudent.email}?subject=${subject}&body=${body}`;
+    attendance: [
+      { date: "2026-03-10", session: "10:00 - 11:30", status: "present" },
+      { date: "2026-03-08", session: "14:00 - 15:30", status: "present" },
+      { date: "2026-03-05", session: "09:00 - 10:30", status: "absent" },
+      { date: "2026-03-03", session: "13:00 - 14:30", status: "present" },
+      { date: "2026-02-28", session: "11:00 - 12:30", status: "present" },
+    ],
+
+    upcomingSchedules: [
+      { date: "2026-03-17", time: "10:00 - 11:30", sessionType: "Highway Driving", duration: "1.5 hours" },
+      { date: "2026-03-19", time: "14:00 - 15:30", sessionType: "Parallel Parking", duration: "1.5 hours" },
+      { date: "2026-03-22", time: "09:00 - 11:00", sessionType: "Mock Road Test", duration: "2 hours" },
+    ],
+
+    evaluations: [
+      { 
+        id: 1, 
+        category: "Basic Control", 
+        test_type: "Parking Skills", 
+        score: 85, 
+        note: "Good control, needs more practice with parallel parking",
+        student_reply: "I'll practice more this week",
+        date: "Mar 10, 2026",
+        remark_date: "Mar 10, 2026",
+        reply_date: "Mar 11, 2026"
+      },
+      { 
+        id: 2, 
+        category: "Road Skills", 
+        test_type: "City Driving", 
+        score: 78, 
+        note: "Needs to work on shoulder checks and lane changes",
+        student_reply: null,
+        date: "Mar 05, 2026",
+        remark_date: "Mar 05, 2026",
+        reply_date: null
+      },
+      { 
+        id: 3, 
+        category: "Advanced", 
+        test_type: "Highway Merging", 
+        score: 92, 
+        note: "Excellent highway skills, confident merging",
+        student_reply: "Thank you! The highway practice helped a lot",
+        date: "Feb 28, 2026",
+        remark_date: "Feb 28, 2026",
+        reply_date: "Mar 01, 2026"
+      },
+    ],
+
+    payments: [
+      { date: "Mar 01, 2026", amount: 250.00, method: "E-Transfer", transaction_id: "ET12345678", status: "succeeded" },
+      { date: "Feb 15, 2026", amount: 200.00, method: "Cash", transaction_id: null, status: "succeeded" },
+      { date: "Feb 01, 2026", amount: 450.00, method: "Credit Card", transaction_id: "CC87654321", status: "succeeded" },
+    ]
   };
 
-  const handleManualPayment = () => {
-    const paid = parseFloat(paymentAmount);
-    if (isNaN(paid) || paid <= 0) return alert("Please enter a valid amount");
+  // Initialize edit form data when data loads
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => {
+      setData(dummyStudentData);
+      setEditFormData({
+        name: dummyStudentData.name,
+        email: dummyStudentData.email,
+        phone: dummyStudentData.phone,
+        street_address: dummyStudentData.street_address,
+        appartment: dummyStudentData.appartment,
+        city: dummyStudentData.city,
+        postal_code: dummyStudentData.postal_code,
+        state: dummyStudentData.state,
+        country: dummyStudentData.country,
+        permit_number: dummyStudentData.permit_number,
+        parent_name: dummyStudentData.parent_name,
+        parent_email: dummyStudentData.parent_email,
+        parent_phone: dummyStudentData.parent_phone,
+        experience: dummyStudentData.experience,
+        additional_notes: dummyStudentData.additional_notes,
+        has_foreign_license: dummyStudentData.has_foreign_license,
+        foreign_license_number: dummyStudentData.foreign_license_number,
+        foreign_street_address: dummyStudentData.foreign_street_address,
+        foreign_appartment: dummyStudentData.foreign_appartment,
+        foreign_city: dummyStudentData.foreign_city,
+        foreign_state: dummyStudentData.foreign_state,
+        foreign_postal_code: dummyStudentData.foreign_postal_code,
+        foreign_country: dummyStudentData.foreign_country,
+      });
+      setLoading(false);
+    }, 1000);
+  }, [studentId]);
 
-    const newBalance = Math.max(0, localStudent.balanceCAD - paid);
-    setLocalStudent({
-      ...localStudent,
-      balanceCAD: newBalance,
-      paymentStatus: newBalance === 0 ? "Paid" : "Balance Due"
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    setPayLoading(true);
+    
+    // Simulate payment recording
+    setTimeout(() => {
+      const newPayment = {
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        amount: parseFloat(formData.amount_total),
+        method: formData.payment_method,
+        transaction_id: formData.transaction_id || 'MANUAL-' + Math.floor(Math.random() * 10000),
+        status: "succeeded"
+      };
+      
+      setData({
+        ...data,
+        payments: [newPayment, ...data.payments],
+        totalPaid: (parseFloat(data.totalPaid) + parseFloat(formData.amount_total)).toFixed(2),
+        balanceCAD: (parseFloat(data.balanceCAD) - parseFloat(formData.amount_total)).toFixed(2),
+        paymentStatus: (parseFloat(data.balanceCAD) - parseFloat(formData.amount_total)) <= 0 ? 'Paid' : 'Balance Due'
+      });
+      
+      setFormData({ 
+        amount_total: "", 
+        payment_method: "Cash", 
+        transaction_id: "", 
+        status: "succeeded"
+      });
+      
+      setPayLoading(false);
+      alert("Payment recorded successfully!");
+    }, 1000);
+  };
+
+  const handleBlockToggle = (action) => {
+    if (!confirm(`Are you sure you want to ${action} this student?`)) return;
+    
+    setData({
+      ...data,
+      status: action === 'block' ? 'blocked' : 'active',
+      isActive: action === 'unblock'
     });
-    setIsEditing(false);
-    setPaymentAmount("");
-    alert("Physical payment recorded successfully!");
+    alert(`Student ${action}ed successfully!`);
   };
 
-  const attendanceLogs = [
-    { date: "2026-02-10", session: "In-Car #1", status: "Present" },
-    { date: "2026-02-12", session: "In-Car #2", status: "Present" },
-    { date: "2026-02-15", session: "In-Car #3", status: "Present" },
-    { date: "2026-02-18", session: "Observation", status: "Absent" },
-  ];
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    
+    // Update the main data with edited values
+    setData({
+      ...data,
+      name: editFormData.name,
+      email: editFormData.email,
+      phone: editFormData.phone,
+      street_address: editFormData.street_address,
+      appartment: editFormData.appartment,
+      city: editFormData.city,
+      postal_code: editFormData.postal_code,
+      state: editFormData.state,
+      country: editFormData.country,
+      permit_number: editFormData.permit_number,
+      parent_name: editFormData.parent_name,
+      parent_email: editFormData.parent_email,
+      parent_phone: editFormData.parent_phone,
+      experience: editFormData.experience,
+      additional_notes: editFormData.additional_notes,
+      has_foreign_license: editFormData.has_foreign_license,
+      foreign_license_number: editFormData.foreign_license_number,
+      foreign_street_address: editFormData.foreign_street_address,
+      foreign_appartment: editFormData.foreign_appartment,
+      foreign_city: editFormData.foreign_city,
+      foreign_state: editFormData.foreign_state,
+      foreign_postal_code: editFormData.foreign_postal_code,
+      foreign_country: editFormData.foreign_country,
+    });
+    
+    setIsEditing(false);
+    alert("Student information updated successfully!");
+  };
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "Schedule":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Upcoming Sessions</h3>
-            {[1, 2].map((i) => (
-              <div key={i} className="flex items-center justify-between p-6 bg-gray-50 dark:bg-gray-800/50 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl flex flex-col items-center justify-center font-bold">
-                    <span className="text-[10px] uppercase font-black tracking-tighter">Feb</span>
-                    <span className="text-lg leading-none">{20 + i}</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-800 dark:text-white">In-Car Lesson #{i + 4}</p>
-                    <p className="text-xs text-gray-500">2:00 PM - 4:00 PM • Pick up at Home</p>
-                  </div>
-                </div>
-                <span className="px-3 py-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-[10px] font-bold text-gray-400 uppercase">Confirmed</span>
-              </div>
-            ))}
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
+  if (loading) return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/80 backdrop-blur-md">
+      <div className="text-center">
+        <Loader2 className="animate-spin text-indigo-500 mb-4 mx-auto" size={48} />
+        <p className="text-white font-black uppercase tracking-widest text-[10px]">Accessing Registry...</p>
+      </div>
+    </div>
+  );
+
+  if (error || !data) return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/80">
+      <div className="bg-white dark:bg-gray-900 p-12 rounded-[3rem] text-center max-w-md">
+        <AlertCircle className="text-red-500 mx-auto mb-4" size={48} />
+        <p className="text-gray-500 text-sm mb-6">{error || "Student not found"}</p>
+        <button onClick={onClose} className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase text-xs">Return</button>
+      </div>
+    </div>
+  );
+
+  // Edit Form Modal
+  if (isEditing) {
+    return (
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-xl p-4 overflow-y-auto">
+        <div className="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-[3rem] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+          
+          {/* Edit Header */}
+          <div className="p-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-black uppercase tracking-tighter">Edit Student Information</h2>
+              <p className="text-sm opacity-90 mt-1">Update personal details for {data.name}</p>
+            </div>
+            <button 
+              onClick={() => setIsEditing(false)}
+              className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+            >
+              <X size={24} />
+            </button>
           </div>
-        );
 
-      case "Payment History":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="p-6 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-4xl">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Admin: Record Cash Payment</h4>
+          {/* Edit Form */}
+          <form onSubmit={handleEditSubmit} className="p-8 max-h-[70vh] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Personal Information */}
+              <div className="col-span-2">
+                <h3 className="text-lg font-black text-indigo-600 mb-4 flex items-center gap-2">
+                  <User size={20} /> Personal Information
+                </h3>
               </div>
-              {!isEditing ? (
-                <button onClick={() => setIsEditing(true)} className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-amber-500/20">
-                  Edit / Record Cash Received
-                </button>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <input type="number" placeholder="Enter amount in CAD" className="flex-1 px-5 py-3 rounded-xl border border-amber-200 outline-none text-sm bg-white dark:bg-gray-900" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
-                  <div className="flex gap-2">
-                    <button onClick={handleManualPayment} className="px-6 py-3 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase">Apply</button>
-                    <button onClick={() => setIsEditing(false)} className="px-6 py-3 bg-gray-200 text-gray-600 rounded-xl text-[10px] font-black uppercase">Cancel</button>
+              
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editFormData.name}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={editFormData.email}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Phone Number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={editFormData.phone}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Permit Number</label>
+                <input
+                  type="text"
+                  name="permit_number"
+                  value={editFormData.permit_number}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              {/* Address Information */}
+              <div className="col-span-2 mt-4">
+                <h3 className="text-lg font-black text-indigo-600 mb-4 flex items-center gap-2">
+                  <MapPin size={20} /> Address Information
+                </h3>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Street Address</label>
+                <input
+                  type="text"
+                  name="street_address"
+                  value={editFormData.street_address}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Apartment/Suite</label>
+                <input
+                  type="text"
+                  name="appartment"
+                  value={editFormData.appartment}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={editFormData.city}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Postal Code</label>
+                <input
+                  type="text"
+                  name="postal_code"
+                  value={editFormData.postal_code}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Province/State</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={editFormData.state}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Country</label>
+                <input
+                  type="text"
+                  name="country"
+                  value={editFormData.country}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              {/* Parent/Guardian Information */}
+              <div className="col-span-2 mt-4">
+                <h3 className="text-lg font-black text-indigo-600 mb-4 flex items-center gap-2">
+                  <Users size={20} /> Parent/Guardian Information
+                </h3>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Parent Name</label>
+                <input
+                  type="text"
+                  name="parent_name"
+                  value={editFormData.parent_name}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Parent Email</label>
+                <input
+                  type="email"
+                  name="parent_email"
+                  value={editFormData.parent_email}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Parent Phone</label>
+                <input
+                  type="tel"
+                  name="parent_phone"
+                  value={editFormData.parent_phone}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                />
+              </div>
+
+              {/* Foreign License */}
+              <div className="col-span-2 mt-4">
+                <h3 className="text-lg font-black text-indigo-600 mb-4 flex items-center gap-2">
+                  <FileText size={20} /> Foreign License Information
+                </h3>
+              </div>
+
+              <div className="col-span-2 flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                <input
+                  type="checkbox"
+                  name="has_foreign_license"
+                  checked={editFormData.has_foreign_license}
+                  onChange={handleInputChange}
+                  className="w-5 h-5 accent-indigo-600"
+                  id="has_foreign_license"
+                />
+                <label htmlFor="has_foreign_license" className="font-medium">Student has foreign license</label>
+              </div>
+
+              {editFormData.has_foreign_license && (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign License Number</label>
+                    <input
+                      type="text"
+                      name="foreign_license_number"
+                      value={editFormData.foreign_license_number}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
                   </div>
-                </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign Country</label>
+                    <input
+                      type="text"
+                      name="foreign_country"
+                      value={editFormData.foreign_country}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign Street Address</label>
+                    <input
+                      type="text"
+                      name="foreign_street_address"
+                      value={editFormData.foreign_street_address}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign Apartment</label>
+                    <input
+                      type="text"
+                      name="foreign_appartment"
+                      value={editFormData.foreign_appartment}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign City</label>
+                    <input
+                      type="text"
+                      name="foreign_city"
+                      value={editFormData.foreign_city}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign State</label>
+                    <input
+                      type="text"
+                      name="foreign_state"
+                      value={editFormData.foreign_state}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Foreign Postal Code</label>
+                    <input
+                      type="text"
+                      name="foreign_postal_code"
+                      value={editFormData.foreign_postal_code}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Additional Notes */}
+              <div className="col-span-2 mt-4">
+                <label className="text-xs font-bold text-gray-500 uppercase">Additional Notes</label>
+                <textarea
+                  name="additional_notes"
+                  value={editFormData.additional_notes}
+                  onChange={handleInputChange}
+                  rows="3"
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-medium mt-2"
+                />
+              </div>
+            </div>
+
+            {/* Form Actions */}
+            <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-8 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-black text-sm uppercase hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-sm uppercase hover:bg-indigo-700 transition flex items-center gap-2"
+              >
+                <Save size={18} /> Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/90 backdrop-blur-xl p-4 md:p-10 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 w-full max-w-6xl min-h-[90vh] rounded-[3.5rem] shadow-2xl relative border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col my-auto">
+        
+        <button onClick={onClose} className="absolute top-8 right-8 z-20 bg-white/10 hover:bg-red-500 hover:text-white text-gray-400 h-12 w-12 flex items-center justify-center rounded-2xl transition-all border border-gray-100 dark:border-gray-800 shadow-xl font-bold">✕</button>
+
+        {/* Header with Student Basic Info */}
+        <div className="p-10 md:p-16 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-gray-900 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Profile Picture */}
+            <div className="h-44 w-44 rounded-[3.5rem] bg-indigo-600 flex items-center justify-center text-7xl font-black text-white italic shadow-2xl border-4 border-white dark:border-gray-800 overflow-hidden">
+              {data.profile_picture ? (
+                <img src={data.profile_picture} className="h-full w-full object-cover" alt="Profile" />
+              ) : (
+                <UserCircle size={80} />
               )}
             </div>
-            {/* Payment Table remains as per previous version */}
-          </div>
-        );
-
-      default: // Overview
-        return (
-          <div className="space-y-10 animate-in fade-in duration-500">
-            {/* PROGRESS BAR */}
-            <section className="p-8 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[2.5rem] border border-indigo-100/50 dark:border-indigo-900/30">
-              <div className="flex justify-between items-end mb-6">
-                <div>
-                  <h3 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-2">GDL Tracking</h3>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">Training Progress</p>
-                </div>
-                <span className="text-sm font-black text-indigo-600">{localStudent.hoursLogged} / 12 Hours</span>
+            
+            {/* Student Info */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-4">
+                <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
+                  data.paymentStatus === 'Paid' 
+                    ? 'bg-emerald-100 text-emerald-600 border-emerald-200' 
+                    : 'bg-amber-100 text-amber-600 border-amber-200'
+                }`}>
+                  {data.paymentStatus}
+                </span>
+                <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
+                  data.status === 'active' 
+                    ? 'bg-green-100 text-green-600 border-green-200'
+                    : data.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-600 border-yellow-200'
+                    : 'bg-red-100 text-red-600 border-red-200'
+                }`}>
+                  {data.status}
+                </span>
+                <span className="px-4 py-1.5 bg-purple-100 text-purple-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-purple-200">
+                  Permit: {data.permit_number || 'N/A'}
+                </span>
               </div>
-              <div className="w-full bg-white dark:bg-gray-800 h-4 rounded-full overflow-hidden p-1 shadow-inner">
-                <div className="bg-indigo-600 h-full rounded-full transition-all duration-1000" style={{ width: `${localStudent.progress}%` }}></div>
-              </div>
-            </section>
-
-            {/* ATTENDANCE */}
-            <section className="p-8 bg-white dark:bg-gray-800/40 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-              <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Attendance Registry</h3>
-              <div className="space-y-3">
-                {attendanceLogs.map((log, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-gray-50 dark:border-gray-800 last:border-0">
-                    <div className="flex items-center gap-4">
-                      <div className="text-[10px] font-black text-gray-400 w-20">{log.date}</div>
-                      <div className="text-xs font-bold text-gray-800 dark:text-gray-200">{log.session}</div>
-                    </div>
-                    <div className={`text-[9px] font-black uppercase px-2 py-1 rounded ${log.status === 'Present' ? 'text-green-500 bg-green-50 dark:bg-green-900/20' : 'text-red-500 bg-red-50 dark:bg-red-900/20'}`}>
-                      {log.status === 'Present' ? <CheckCircle size={10} className="inline mr-1"/> : <XCircle size={10} className="inline mr-1"/>} {log.status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* SKILL EVALUATION (RESTORED) */}
-
-              <section className="w-full">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-8 flex items-center gap-4">
-                  Skill Evaluation & Instructor Remarks 
-                  <div className="h-px flex-1 bg-gray-100 dark:bg-gray-800"></div>
-                </h3>
-
-                {/* Changed to md:grid-cols-2 to force two columns and used w-full */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                  {localStudent.evaluations.map((item, i) => (
-                    <div 
-                      key={item.category} 
-                      className="group bg-white dark:bg-[#111827] rounded-[2.5rem] border border-gray-100 dark:border-gray-800/50 p-2 transition-all hover:border-indigo-500/30 w-full"
-                    >
-                      <div className="flex flex-col h-full min-h-[350px] w-full">
-                        {/* HEADER: Category and Score */}
-                        <div className="p-8 w-full">
-                          <div className="flex justify-between items-start mb-6 w-full">
-                            <div className="space-y-1">
-                              <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em]">Category</span>
-                              <h4 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">{item.category}</h4>
-                            </div>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-4xl font-black text-gray-800 dark:text-white">{item.score}</span>
-                              <span className="text-gray-500 font-bold text-lg">/5</span>
-                            </div>
-                          </div>
-
-                          {/* PROGRESS BARS */}
-                          <div className="flex gap-2 mb-2 w-full">
-                            {[1, 2, 3, 4, 5].map((dot) => (
-                              <div 
-                                key={dot} 
-                                className={`h-2.5 flex-1 rounded-full transition-all duration-700 ${
-                                  dot <= item.score 
-                                  ? 'bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]' 
-                                  : 'bg-gray-100 dark:bg-gray-800/60'
-                                }`}
-                              ></div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* FOOTER: Feedback Area - Full width inside card */}
-                        <div className="px-4 pb-4 mt-auto w-full">
-                          <div className="bg-gray-50 dark:bg-[#1f2937]/50 rounded-[2rem] p-8 border border-transparent dark:border-gray-700/30 w-full">
-                            <div className="flex items-center gap-2 mb-4">
-                              <div className="h-1.5 w-1.5 rounded-full bg-indigo-500"></div>
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Instructor Feedback</span>
-                            </div>
-                            <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed font-medium italic">
-                              "{item.note}"
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-
-          </div>
-        );
-    }
-  };
-
-return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-gray-950/80 backdrop-blur-sm p-0 md:p-6 overflow-y-auto custom-scrollbar">
-      <div className="bg-white dark:bg-gray-900 w-full max-w-5xl my-auto rounded-none md:rounded-[2.5rem] shadow-2xl relative border border-gray-100 dark:border-gray-800 overflow-hidden">
-        
-        <button onClick={onClose} className="absolute top-6 right-6 z-110 bg-white dark:bg-gray-800 text-gray-400 hover:text-red-500 h-10 w-10 flex items-center justify-center rounded-xl transition-all border border-gray-100 dark:border-gray-700 shadow-sm">✕</button>
-
-        {/* HEADER SECTION */}
-        <div className="p-8 md:p-12 bg-gray-50/30 dark:bg-gray-800/10 border-b border-gray-100 dark:border-gray-800">
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-10">
-            <div className="flex items-center gap-8">
-              <div className="h-32 w-32 rounded-4xl bg-indigo-600 text-white flex items-center justify-center text-4xl font-bold shadow-xl">
-                {localStudent.name.charAt(0)}
-              </div>
-              <div className="space-y-4">
-                <div className="flex gap-3">
-                  <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-widest">{localStudent.licenseClass}</span>
-                  <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${localStudent.paymentStatus === 'Paid' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>{localStudent.paymentStatus}</span>
-                </div>
-                <h2 className="text-4xl font-bold text-gray-800 dark:text-white tracking-tight">{localStudent.name}</h2>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">📧 {localStudent.email}</p>
+              <h2 className="text-5xl font-black text-gray-900 dark:text-white italic uppercase tracking-tighter mb-2">{data.name}</h2>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-gray-500 font-bold uppercase text-[10px] tracking-widest">
+                <span className="flex items-center gap-2">
+                  <Mail size={14} className="text-indigo-500"/> {data.email}
+                </span>
+                <span className="flex items-center gap-2">
+                  <Phone size={14} className="text-indigo-500"/> {data.phone || 'N/A'}
+                </span>
+                <span className="flex items-center gap-2">
+                  <MapPin size={14} className="text-indigo-500"/> {data.location || 'N/A'}
+                </span>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 px-6 py-4 rounded-2xl border border-gray-100 text-center lg:text-left shadow-sm">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Balance Due</p>
-              <p className="text-2xl font-black text-gray-800 dark:text-white">{formatCAD(localStudent.balanceCAD)}</p>
+
+            {/* Right Side - Balance Card and Status Actions */}
+            <div className="flex flex-col items-stretch gap-4 min-w-[240px]">
+              {/* Balance Card */}
+              <div className="bg-white dark:bg-gray-950 p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl text-center">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Due to Pay</p>
+                <p className="text-3xl font-black text-gray-900 dark:text-white italic">CAD {data.balanceCAD}</p>
+              </div>
+              
+              {/* Status Action Buttons */}
+              <div className="flex flex-col gap-2">
+                {data.status === 'active' ? (
+                  <button 
+                    onClick={() => handleBlockToggle('block')}
+                    className="w-full px-4 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:from-rose-600 hover:to-rose-700 transition-all shadow-lg flex items-center justify-center gap-2"
+                  >
+                    <ShieldCheck size={14} />
+                    Block Student
+                  </button>
+                ) : data.status === 'blocked' ? (
+                  <button 
+                    onClick={() => handleBlockToggle('unblock')}
+                    className="w-full px-4 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:from-emerald-600 hover:to-emerald-700 transition-all shadow-lg flex items-center justify-center gap-2"
+                  >
+                    <ShieldCheck size={14} />
+                    Unblock Student
+                  </button>
+                ) : data.status === 'pending' ? (
+                  <div className="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
+                    <Clock size={14} />
+                    Pending Approval
+                  </div>
+                ) : null}
+
+                {/* Edit Profile Button */}
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="w-full px-4 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg flex items-center justify-center gap-2 mt-2"
+                >
+                  <Edit size={14} />
+                  Edit Profile
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* TABS NAVIGATION */}
-        <div className="flex px-8 md:px-12 border-b border-gray-100 gap-8">
-          {["Overview", "Schedule", "Payment History"].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`py-6 text-xs font-bold uppercase tracking-widest transition-all relative whitespace-nowrap ${activeTab === tab ? "text-indigo-600" : "text-gray-400"}`}>
+        {/* Tabs Navigation */}
+        <div className="flex px-16 bg-white dark:bg-gray-900 border-b border-gray-50 dark:border-gray-800 gap-10 overflow-x-auto no-scrollbar">
+          {["Overview", "Attendance & Schedule", "Skill Evaluation", "Payment History"].map((tab) => (
+            <button 
+              key={tab} 
+              onClick={() => setActiveTab(tab)} 
+              className={`py-8 whitespace-nowrap text-xs font-black uppercase tracking-widest relative transition-all ${
+                activeTab === tab ? "text-indigo-600" : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
               {tab}
-              {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-full"></div>}
+              {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-indigo-600 rounded-t-full" />}
             </button>
           ))}
         </div>
 
-        <div className="p-8 md:p-12 space-y-12">
-          {/* TOP GRID: Contains the specific tab content and the sidebar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2">
-               {/* Note: I removed the Skill Evaluation from inside renderTabContent() 
-                   so it doesn't get squished here */}
-               {activeTab === "Schedule" || activeTab === "Payment History" ? renderTabContent() : (
-                 <div className="space-y-10 animate-in fade-in duration-500">
-                    <section className="p-8 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[2.5rem] border border-indigo-100/50 dark:border-indigo-900/30">
-                      <div className="flex justify-between items-end mb-6">
-                        <div>
-                          <h3 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-2">GDL Tracking</h3>
-                          <p className="text-2xl font-bold text-gray-800 dark:text-white">Training Progress</p>
-                        </div>
-                        <span className="text-sm font-black text-indigo-600">{localStudent.hoursLogged} / 12 Hours</span>
-                      </div>
-                      <div className="w-full bg-white dark:bg-gray-800 h-4 rounded-full overflow-hidden p-1 shadow-inner">
-                        <div className="bg-indigo-600 h-full rounded-full transition-all duration-1000" style={{ width: `${localStudent.progress}%` }}></div>
-                      </div>
-                    </section>
-
-                    <section className="p-8 bg-white dark:bg-gray-800/40 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-                      <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Attendance Registry</h3>
-                      <div className="space-y-3">
-                        {attendanceLogs.map((log, i) => (
-                          <div key={i} className="flex items-center justify-between py-3 border-b border-gray-50 dark:border-gray-800 last:border-0">
-                            <div className="flex items-center gap-4">
-                              <div className="text-[10px] font-black text-gray-400 w-20">{log.date}</div>
-                              <div className="text-xs font-bold text-gray-800 dark:text-gray-200">{log.session}</div>
-                            </div>
-                            <div className={`text-[9px] font-black uppercase px-2 py-1 rounded ${log.status === 'Present' ? 'text-green-500 bg-green-50 dark:bg-green-900/20' : 'text-red-500 bg-red-50 dark:bg-red-900/20'}`}>
-                              {log.status === 'Present' ? <CheckCircle size={10} className="inline mr-1"/> : <XCircle size={10} className="inline mr-1"/>} {log.status}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                 </div>
-               )}
-            </div>
-
-            {/* SIDEBAR */}
-            <div className="space-y-6">
-              {localStudent.balanceCAD > 0 && (
-                <button onClick={sendReminderEmail} className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-4xl font-black text-[10px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-3">
-                  <Mail size={16} /> Send Email Reminder
-                </button>
-              )}
-              <div className="bg-gray-900 dark:bg-indigo-600 rounded-[3rem] p-10 text-center text-white shadow-2xl relative">
-                <h4 className="text-[10px] font-bold uppercase opacity-60 mb-8">GDL Countdown</h4>
-                <div className="text-6xl font-black mb-2">{localStudent.gdlEligibilityMonths}</div>
-                <p className="text-[10px] uppercase font-bold opacity-80 mb-8">days until Class 5</p>
-              </div>
-              <div className="p-8 bg-gray-50 dark:bg-gray-800/50 rounded-[2.5rem] border border-gray-100">
-                <h4 className="text-[10px] font-black text-gray-400 uppercase mb-4">Instructor</h4>
-                <p className="font-bold text-gray-800 dark:text-white">{localStudent.instructor}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* FULL WIDTH EVALUATION SECTION (Placed outside the grid) */}
+        {/* Tab Content */}
+        <div className="flex-1 p-10 md:p-16 overflow-y-auto">
+          
+          {/* OVERVIEW TAB */}
           {activeTab === "Overview" && (
-            <section className="w-full pt-4">
-              <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-8 flex items-center gap-4">
-                Skill Evaluation & Instructor Remarks 
-                <div className="h-px flex-1 bg-gray-100 dark:bg-gray-800"></div>
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                {localStudent.evaluations.map((item, i) => (
-                  <div key={item.category} className="group bg-white dark:bg-[#111827] rounded-[2.5rem] border border-gray-100 dark:border-gray-800/50 p-2 transition-all hover:border-indigo-500/30 w-full">
-                    <div className="flex flex-col h-full min-h-[350px] w-full">
-                      <div className="p-8 w-full">
-                        <div className="flex justify-between items-start mb-6 w-full">
-                          <div className="space-y-1">
-                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em]">Category</span>
-                            <h4 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">{item.category}</h4>
-                          </div>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-black text-gray-800 dark:text-white">{item.score}</span>
-                            <span className="text-gray-500 font-bold text-lg">/5</span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2 mb-2 w-full">
-                          {[1, 2, 3, 4, 5].map((dot) => (
-                            <div key={dot} className={`h-2.5 flex-1 rounded-full transition-all duration-700 ${dot <= item.score ? 'bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]' : 'bg-gray-100 dark:bg-gray-800/60'}`}></div>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="px-4 pb-4 mt-auto w-full">
-                        <div className="bg-gray-50 dark:bg-[#1f2937]/50 rounded-[2rem] p-8 border border-transparent dark:border-gray-700/30 w-full">
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="h-1.5 w-1.5 rounded-full bg-indigo-500"></div>
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Instructor Feedback</span>
-                          </div>
-                          <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed font-medium italic">"{item.note}"</p>
-                        </div>
-                      </div>
+            <div className="space-y-10">
+              {/* Student Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Personal Information */}
+                <div className="col-span-1 bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-lg">
+                  <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-indigo-600 mb-6">
+                    <User size={18}/> Personal Details
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="pb-3 border-b border-gray-100">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Full Name</p>
+                      <p className="font-bold text-gray-900 dark:text-white">{data.name}</p>
+                    </div>
+                    <div className="pb-3 border-b border-gray-100">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Email Address</p>
+                      <p className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <Mail size={14} className="text-indigo-400"/>
+                        {data.email}
+                      </p>
+                    </div>
+                    <div className="pb-3 border-b border-gray-100">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Phone Number</p>
+                      <p className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <Phone size={14} className="text-indigo-400"/>
+                        {data.phone || 'Not provided'}
+                      </p>
+                    </div>
+                    <div className="pb-3 border-b border-gray-100">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Province</p>
+                      <p className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <MapPin size={14} className="text-indigo-400"/>
+                        {data.location || data.province || 'N/A'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider mb-1">Permit Number</p>
+                      <p className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <FileText size={14} className="text-indigo-400"/>
+                        {data.permit_number || 'Not issued'}
+                      </p>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Package & Enrollment Details */}
+                <div className="col-span-1 bg-indigo-50 dark:bg-indigo-950/20 p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-900/40 shadow-lg">
+                  <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-indigo-600 mb-6">
+                    <BookOpen size={18}/> Enrollment Details
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center pb-3 border-b border-indigo-100/50">
+                      <span className="text-gray-500 font-bold text-xs uppercase">Selected Package</span>
+                      <span className="font-black text-gray-900 dark:text-white text-lg">
+                        {data.packageName || 'Standard Course'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-indigo-100/50">
+                      <span className="text-gray-500 font-bold text-xs uppercase">Package Amount</span>
+                      <span className="font-black text-indigo-600 text-xl">
+                        CAD {data.totalPackageAmount}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-indigo-100/50">
+                      <span className="text-gray-500 font-bold text-xs uppercase">Total Paid</span>
+                      <span className="font-black text-emerald-600 text-xl">
+                        CAD {data.totalPaid}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 font-bold text-xs uppercase">Training Hours</span>
+                      <span className="font-black text-gray-900 dark:text-white">
+                        {data.hoursLogged} / {data.totalHours} Hours
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Instructor Details */}
+                <div className="col-span-1 bg-gray-900 rounded-[2.5rem] p-8 text-white shadow-xl relative overflow-hidden">
+                  <div className="absolute -right-4 -bottom-4 opacity-10">
+                    <User size={120}/>
+                  </div>
+                  <h4 className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-indigo-300 mb-6">
+                    <Award size={18}/> Assigned Instructor
+                  </h4>
+                  
+                  {data.instructor && data.instructor !== 'Unassigned' ? (
+                    <div className="space-y-4 relative z-10">
+                      <div>
+                        <p className="text-2xl font-black italic uppercase tracking-tighter mb-1">
+                          {data.instructor}
+                        </p>
+                        <p className="text-xs text-indigo-300 font-bold uppercase tracking-wider">
+                          Lead Instructor
+                        </p>
+                      </div>
+                      
+                      {data.instructorEmail && (
+                        <div className="flex items-center gap-3 text-sm">
+                          <Mail size={16} className="text-indigo-400"/>
+                          <span className="opacity-90">{data.instructorEmail}</span>
+                        </div>
+                      )}
+                      
+                      {data.instructorPhone && (
+                        <div className="flex items-center gap-3 text-sm">
+                          <Phone size={16} className="text-indigo-400"/>
+                          <span className="opacity-90">{data.instructorPhone}</span>
+                        </div>
+                      )}
+                      
+                      <div className="mt-4 pt-4 border-t border-indigo-800/50">
+                        <p className="text-[9px] font-black uppercase tracking-wider text-indigo-400 mb-1">
+                          Specialization
+                        </p>
+                        <p className="text-sm font-bold">Class 5 & 7 Instruction</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-6">
+                      <p className="text-2xl font-black italic opacity-50 mb-2">Unassigned</p>
+                      <p className="text-xs text-indigo-300">No instructor assigned yet</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </section>
+            </div>
+          )}
+
+          {/* ATTENDANCE & SCHEDULE TAB */}
+          {activeTab === "Attendance & Schedule" && (
+            <div className="space-y-8">
+              {/* Sub-tabs for Attendance/Upcoming */}
+              <div className="flex gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
+                <button
+                  onClick={() => setScheduleTab('attendance')}
+                  className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                    scheduleTab === 'attendance'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'
+                  }`}
+                >
+                  <Clock size={16} className="inline mr-2" />
+                  Attendance History
+                </button>
+                <button
+                  onClick={() => setScheduleTab('upcoming')}
+                  className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                    scheduleTab === 'upcoming'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'
+                  }`}
+                >
+                  <Calendar size={16} className="inline mr-2" />
+                  Upcoming Schedule
+                </button>
+              </div>
+
+              {/* Attendance History */}
+              {scheduleTab === 'attendance' && (
+                <div className="space-y-6">
+                  <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">
+                    Complete Attendance Log ({data.attendance?.length || 0} sessions)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {data.attendance?.length > 0 ? (
+                      data.attendance.map((log, i) => (
+                        <div key={i} className="p-6 bg-gray-50 dark:bg-gray-800/40 rounded-3xl border border-gray-100 flex justify-between items-center group hover:shadow-lg transition">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-2xl ${
+                              log.status === 'present' 
+                                ? 'bg-green-100 text-green-600' 
+                                : 'bg-amber-100 text-amber-600'
+                            }`}>
+                              <Clock size={20}/>
+                            </div>
+                            <div>
+                              <p className="font-bold text-gray-900 dark:text-white uppercase text-sm">
+                                {log.session || 'Driving Session'}
+                              </p>
+                              <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">
+                                {log.date}
+                              </p>
+                            </div>
+                          </div>
+                          <span className={`text-[9px] font-black uppercase px-4 py-1.5 rounded-xl border ${
+                            log.status === 'present' 
+                              ? 'bg-green-100 text-green-600 border-green-200' 
+                              : log.status === 'absent'
+                              ? 'bg-rose-100 text-rose-600 border-rose-200'
+                              : 'bg-gray-100 text-gray-600 border-gray-200'
+                          }`}>
+                            {log.status}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-2 text-center py-16 bg-gray-50 dark:bg-gray-800/20 rounded-[2.5rem]">
+                        <Clock size={48} className="mx-auto text-gray-400 mb-4" />
+                        <p className="text-gray-500 font-bold">No attendance records found</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Upcoming Schedule */}
+              {scheduleTab === 'upcoming' && (
+                <div className="space-y-6">
+                  <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">
+                    Upcoming Sessions
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {data.upcomingSchedules?.length > 0 ? (
+                      data.upcomingSchedules.map((schedule, i) => (
+                        <div key={i} className="p-6 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-gray-900 rounded-3xl border border-indigo-100 dark:border-indigo-900/40 flex justify-between items-center">
+                          <div className="flex items-center gap-4">
+                            <div className="p-3 bg-indigo-100 text-indigo-600 rounded-2xl">
+                              <CalendarIcon size={20}/>
+                            </div>
+                            <div>
+                              <p className="font-black text-gray-900 dark:text-white uppercase text-sm">
+                                {schedule.sessionType || 'Driving Lesson'}
+                              </p>
+                              <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest mt-1">
+                                {schedule.date} • {schedule.time}
+                              </p>
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-black uppercase px-4 py-1.5 bg-indigo-100 text-indigo-600 rounded-xl border border-indigo-200">
+                            {schedule.duration || '2 hours'}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-2 text-center py-16 bg-gray-50 dark:bg-gray-800/20 rounded-[2.5rem]">
+                        <Calendar size={48} className="mx-auto text-gray-400 mb-4" />
+                        <p className="text-gray-500 font-bold">No upcoming sessions scheduled</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* SKILL EVALUATION TAB */}
+          {activeTab === "Skill Evaluation" && (
+            <div className="space-y-8">
+              {/* Header with stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-6 rounded-[2rem] text-white shadow-xl">
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">Total Evaluations</p>
+                  <p className="text-4xl font-black">{data.evaluations?.length || 0}</p>
+                </div>
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-[2rem] text-white shadow-xl">
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">Average Score</p>
+                  <p className="text-4xl font-black">
+                    {data.evaluations?.length > 0 
+                      ? Math.round(data.evaluations.reduce((acc, curr) => acc + curr.score, 0) / data.evaluations.length) 
+                      : 0}%
+                  </p>
+                </div>
+                <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-[2rem] text-white shadow-xl">
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">Tests Completed</p>
+                  <p className="text-4xl font-black">{data.evaluations?.length || 0}</p>
+                </div>
+              </div>
+
+              {/* Evaluations List */}
+              <div className="space-y-6">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <Award size={18} className="text-indigo-500"/>
+                  Skill Assessment Records
+                </h3>
+                
+                {data.evaluations?.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-6">
+                    {data.evaluations.map((item, i) => (
+                      <div key={i} className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-lg overflow-hidden hover:shadow-xl transition-all">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 p-6 border-b border-gray-100 dark:border-gray-800">
+                          <div className="flex flex-wrap items-center justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                              <div className="h-14 w-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                                <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">#{i + 1}</span>
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-3 mb-1">
+                                  <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-xl text-[9px] font-black uppercase tracking-wider">
+                                    {item.category || 'Driving Test'}
+                                  </span>
+                                  <span className="text-xs text-gray-500 flex items-center gap-1">
+                                    <Calendar size={12}/>
+                                    {item.date || 'N/A'}
+                                  </span>
+                                </div>
+                                <h4 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                                  {item.test_type || 'Practical Evaluation'}
+                                </h4>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="text-right">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Score</p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-4xl font-black text-indigo-600">{item.score}</span>
+                                  <span className="text-sm text-gray-400">/100</span>
+                                </div>
+                              </div>
+                              <div className="h-16 w-16 rounded-2xl bg-indigo-600 flex items-center justify-center">
+                                <span className="text-2xl font-black text-white">{item.score}%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="px-6 pt-4">
+                          <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full"
+                              style={{ width: `${item.score}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Instructor Remarks & Student Reply */}
+                        <div className="p-6 space-y-4">
+                          {/* Instructor Remark */}
+                          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border-l-4 border-indigo-500">
+                            <div className="flex items-start gap-3">
+                              <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center flex-shrink-0">
+                                <User size={16} className="text-indigo-600"/>
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-black text-indigo-600 uppercase tracking-wider">Instructor Remark</span>
+                                  <span className="text-[9px] text-gray-400">{item.remark_date || 'N/A'}</span>
+                                </div>
+                                <p className="text-sm text-gray-700 dark:text-gray-300">
+                                  "{item.note || 'No remarks provided'}"
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Student Reply (if exists) */}
+                          {item.student_reply ? (
+                            <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-5 border-l-4 border-blue-500 ml-8">
+                              <div className="flex items-start gap-3">
+                                <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
+                                  <User size={16} className="text-blue-600"/>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs font-black text-blue-600 uppercase tracking-wider">Student Reply</span>
+                                    <span className="text-[9px] text-gray-400">{item.reply_date || 'N/A'}</span>
+                                  </div>
+                                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                                    "{item.student_reply}"
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="bg-gray-50/50 dark:bg-gray-800/20 rounded-xl p-5 border border-dashed border-gray-300 dark:border-gray-700 ml-8">
+                              <div className="flex items-center gap-3">
+                                <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                  <MessageCircle size={16} className="text-gray-500"/>
+                                </div>
+                                <p className="text-xs text-gray-500 italic">No reply from student yet</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Footer with view-only indicator */}
+                        <div className="bg-gray-50/50 dark:bg-gray-800/20 px-6 py-3 border-t border-gray-100 dark:border-gray-800">
+                          <div className="flex items-center justify-end text-[9px] text-gray-400 uppercase tracking-wider">
+                            <ShieldCheck size={12} className="mr-1" />
+                            Admin View Only • No Editing Allowed
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20 bg-gray-50 dark:bg-gray-800/20 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-700">
+                    <Award size={60} className="mx-auto text-gray-400 mb-4" />
+                    <p className="text-gray-500 font-bold text-lg mb-2">No Evaluations Found</p>
+                    <p className="text-gray-400 text-sm">Skill assessments will appear here once completed</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* PAYMENT HISTORY TAB */}
+          {activeTab === "Payment History" && (
+            <div className="space-y-10">
+              {/* Payment Form */}
+              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-gray-900 p-10 rounded-[3rem] border-2 border-dashed border-indigo-200 dark:border-indigo-900/40">
+                <h4 className="text-xs font-black uppercase tracking-widest mb-8 text-indigo-600 flex items-center gap-3">
+                  <PlusCircle size={20}/> Record New Payment
+                </h4>
+                <form onSubmit={handlePaymentSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="relative">
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      placeholder="Amount" 
+                      className="w-full bg-white dark:bg-gray-900 pl-12 pr-6 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-bold outline-none focus:border-indigo-300" 
+                      value={formData.amount_total} 
+                      onChange={e => setFormData({...formData, amount_total: e.target.value})} 
+                      required 
+                    />
+                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+                  </div>
+                  
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Transaction ID" 
+                      className="w-full bg-white dark:bg-gray-900 pl-12 pr-6 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-bold outline-none focus:border-indigo-300"
+                      value={formData.transaction_id} 
+                      onChange={e => setFormData({...formData, transaction_id: e.target.value})} 
+                    />
+                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+                  </div>
+                  
+                  <select 
+                    className="bg-white dark:bg-gray-900 px-6 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-bold outline-none focus:border-indigo-300"
+                    value={formData.payment_method} 
+                    onChange={e => setFormData({...formData, payment_method: e.target.value})}
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="E-Transfer">E-Transfer</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                  </select>
+                  
+                  <button 
+                    type="submit" 
+                    disabled={payLoading} 
+                    className="bg-indigo-600 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl py-4 flex justify-center items-center hover:bg-indigo-700 transition disabled:opacity-50"
+                  >
+                    {payLoading ? <Loader2 className="animate-spin" size={16} /> : "Record Payment"}
+                  </button>
+                </form>
+              </div>
+
+              {/* Payment History Table */}
+              <div className="bg-white dark:bg-gray-950 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 overflow-hidden shadow-xl">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-gray-50 dark:bg-gray-800/50">
+                      <tr>
+                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
+                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Method</th>
+                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Transaction ID</th>
+                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                      {data.payments?.length > 0 ? (
+                        data.payments.map((p, i) => (
+                          <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition">
+                            <td className="p-6 font-bold text-sm">{p.date}</td>
+                            <td className="p-6 font-black text-indigo-600 text-lg">CAD {p.amount}</td>
+                            <td className="p-6 font-bold text-gray-600 dark:text-gray-400 text-xs uppercase">
+                              {p.method || 'N/A'}
+                            </td>
+                            <td className="p-6 font-mono text-xs text-gray-500">
+                              {p.transaction_id || '—'}
+                            </td>
+                            <td className="p-6">
+                              <span className={`px-3 py-1 text-[9px] font-black rounded-lg uppercase ${
+                                p.status === 'succeeded' 
+                                  ? 'bg-green-50 text-green-600 border border-green-200' 
+                                  : 'bg-yellow-50 text-yellow-600 border border-yellow-200'
+                              }`}>
+                                {p.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="p-12 text-center text-gray-500">
+                            <CreditCard size={40} className="mx-auto mb-4 text-gray-400" />
+                            No payment records found
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

@@ -7,7 +7,7 @@ import {
   BookOpen, CreditCard, Calendar, UserCheck,
   Menu, X
 } from 'lucide-react';
-import RegisterModal from '../components/RegisterModal';
+import RegistrationPage  from './RegistrationPage';
 
 const LandingPage = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -583,14 +583,25 @@ const LandingPage = () => {
 
       {/* Registration Modal */}
       {showRegisterModal && (
-        <RegisterModal 
-          onClose={() => setShowRegisterModal(false)} 
-          onLoginClick={() => {
-            setShowRegisterModal(false);
-            // You can handle login modal here if needed
-          }}
-        />
-      )}
+  <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 overflow-y-auto">
+    <div className="relative w-full max-w-5xl my-auto animate-in fade-in zoom-in duration-300">
+      
+      {/* Container to handle the "Close" action since it's now a page component */}
+      <RegistrationPage 
+        onBack={() => setShowRegisterModal(false)} 
+        initialData={null} // null because it's a new registration
+      />
+      
+      {/* Extra Close Button for the Modal specifically */}
+      <button 
+        onClick={() => setShowRegisterModal(false)}
+        className="absolute top-6 right-6 z-110 p-2 bg-white/10 hover:bg-red-500 text-grey-500 rounded-full transition-all shadow-xl"
+      >
+        <X size={24} />
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Animation Styles */}
       <style>{`

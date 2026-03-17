@@ -16,6 +16,7 @@ import Settings from "../pages/Settings";
 import Login from "../pages/Login";
 import LandingPage from "../pages/LandingPage";
 import ResetPassword from "../pages/ResetPassword";
+import RegistrationPage from "../pages/RegistrationPage";
 
 // ... other admin imports
 
@@ -32,6 +33,7 @@ const AppRoutes = () => {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/register" element={<RegistrationPage/>}/>
       {/* ADMIN ROUTES */}
       <Route element={<AdminLayout />}>
         <Route path="/admin" element={<Dashboard />} />
