@@ -272,7 +272,7 @@ const InstructorNotificationPage = () => {
         {/* Header with Stats */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="text-3xl md:text-4xl font-black italic uppercase text-slate-800 dark:text-white">
+            <h2 className=" text-xl md:text-2xl font-['Sora'] font-bold text-slate-800 dark:text-white">
               Notifications <span className="text-teal-600">& Alerts</span>
             </h2>
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">

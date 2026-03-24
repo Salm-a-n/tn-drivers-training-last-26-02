@@ -358,13 +358,11 @@ const FleetManagement = () => {
         {/* HEADER SECTION - Updated to match Applications page style */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-<<<<<<< HEAD
+
             <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
               Car <span className="text-teal-600 dark:text-teal-400">Management</span>
-=======
-            <h1 className="text-xl md:text-2xl font-['Sora'] font-bold tracking-tight text-slate-800 dark:text-white">
-              Car <span className="text-terra-600 dark:text-terra-400">Management</span>
->>>>>>> 161ce3d432b72b099b0b2445f6e5ce85b388d975
+            <span className="text-terra-600 dark:text-terra-400">Management</span>
+
             </h1>
             <p className="text-[0.65rem] font-['DM_Mono'] text-slate-500 dark:text-slate-400 mt-0.5 tracking-wider">
               Manage your fleet inventory, track maintenance, and monitor vehicle assignments

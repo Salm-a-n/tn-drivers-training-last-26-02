@@ -1236,14 +1236,6 @@
 
 
 
-
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 161ce3d432b72b099b0b2445f6e5ce85b388d975
 import React, { useState, useEffect } from "react";
 import { 
   Mail, Loader2, Calendar, Clock, 
