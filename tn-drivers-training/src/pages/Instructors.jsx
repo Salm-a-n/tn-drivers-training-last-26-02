@@ -290,18 +290,329 @@
 
 
 
+// import React, { useState } from 'react';
+// import InstructorDetailModal from '../components/InstructorDetailModal';
+// import InstructorRegistrationModal from '../components/InstructorRegistrationModal';
+// import { 
+//   Search, Eye, Download, Plus
+// } from 'lucide-react';
+
+// const Instructors = () => {
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const [locationFilter, setLocationFilter] = useState('All Locations');
+//   const [selectedInstructor, setSelectedInstructor] = useState(null);
+//   const [isRegModalOpen, setIsRegModalOpen] = useState(false);
+
+//   const [instructors, setInstructors] = useState([
+//     { 
+//       id: "INST-9821", 
+//       name: "Jean Dupont", 
+//       contact: "709-555-0123", 
+//       email: "jean.d@example.com",
+//       dob: "1985-06-12",
+//       address: "123 Maple Leaf Ave, Toronto, ON",
+//       license: "D1234-56789-01234",
+//       expiry: "2026-03-10", 
+//       vehicle: "Toyota Corolla", 
+//       plate: "V-882", 
+//       success: 92, 
+//       location: "Burin",
+//       status: "Active",
+//       students: [
+//         { id: "STU-101", name: "Alice Cooper", progress: "60%" },
+//         { id: "STU-102", name: "Bob Marley", progress: "20%" }
+//       ]
+//     },
+//     { 
+//       id: "INST-1122", 
+//       name: "Marc Leblanc", 
+//       contact: "709-555-9988", 
+//       email: "m.leblanc@example.com",
+//       dob: "1982-11-05",
+//       address: "77 Water St, Burin, NL",
+//       license: "L5544-33221-11223",
+//       expiry: "2025-12-30", 
+//       vehicle: "Hyundai Elantra", 
+//       plate: "V-901", 
+//       success: 95, 
+//       location: "Burin",
+//       status: "Active",
+//       students: [{ id: "STU-105", name: "Kevin Hart", progress: "10%" }]
+//     },
+//     { 
+//       id: "INST-4432", 
+//       name: "Sarah Miller", 
+//       contact: "709-555-4432", 
+//       email: "s.miller@example.com",
+//       dob: "1990-02-20",
+//       address: "456 Oak St, St. John's, NL",
+//       license: "S9876-54321-09876",
+//       expiry: "2026-05-20", 
+//       vehicle: "Honda Civic", 
+//       plate: "V-104", 
+//       success: 88, 
+//       location: "St. John’s / Mount Pearl",
+//       status: "Blocked",
+//       students: []
+//     },
+//     { 
+//       id: "INST-5566", 
+//       name: "David Smith", 
+//       contact: "709-555-6677", 
+//       email: "d.smith@example.com",
+//       dob: "1988-08-15",
+//       address: "12 Pine Rd, Grand Falls, NL",
+//       license: "K1122-33445-55667",
+//       expiry: "2027-01-10", 
+//       vehicle: "Ford Focus", 
+//       plate: "V-302", 
+//       success: 90, 
+//       location: "Grand Falls",
+//       status: "Active",
+//       students: [{ id: "STU-109", name: "Emma Watson", progress: "45%" }]
+//     }
+//   ]);
+
+//   const handleAddInstructor = (newIns) => {
+//     const formattedInstructor = {
+//       ...newIns,
+//       id: `INST-${Math.floor(1000 + Math.random() * 9000)}`,
+//       success: 0, 
+//       status: "Active",
+//       students: []
+//     };
+//     setInstructors((prev) => [...prev, formattedInstructor]);
+//   };
+
+//   const handleUpdateInstructor = (id, updatedFields) => {
+//     setInstructors(prev => prev.map(ins => 
+//       ins.id === id ? { ...ins, ...updatedFields } : ins
+//     ));
+//     if (selectedInstructor && selectedInstructor.id === id) {
+//       setSelectedInstructor(prev => ({ ...prev, ...updatedFields }));
+//     }
+//   };
+
+//   const handleToggleBlockStatus = (id) => {
+//     setInstructors(prev => prev.map(ins => 
+//       ins.id === id ? { ...ins, status: ins.status === "Blocked" ? "Active" : "Blocked" } : ins
+//     ));
+//   };
+
+//   const filteredInstructors = instructors.filter(ins => {
+//     const matchesLocation = locationFilter === 'All Locations' || ins.location === locationFilter;
+//     const matchesSearch = ins.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+//                           ins.id.toLowerCase().includes(searchTerm.toLowerCase());
+//     return matchesLocation && matchesSearch;
+//   });
+
+//   return (
+//     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 transition-colors duration-300 font-['Sora','Inter',system-ui]">
+      
+//       {/* HEADER */}
+//       <header className="w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 md:px-8 py-4 sticky top-0 z-20 transition-all">
+//         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 max-w-7xl mx-auto">
+//           <div className="flex flex-col md:flex-row gap-3 w-full lg:w-auto">
+//             <div className="relative w-full md:w-72">
+//               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 w-4 h-4" />
+//               <input 
+//                 className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.7rem] font-mono outline-none focus:ring-1 focus:ring-teal-500 dark:text-slate-200 placeholder:text-slate-400" 
+//                 placeholder="Search name or ID..." 
+//                 value={searchTerm}
+//                 onChange={(e) => setSearchTerm(e.target.value)}
+//               />
+//             </div>
+//             <select 
+//               value={locationFilter} 
+//               onChange={(e) => setLocationFilter(e.target.value)}
+//               className="w-full md:w-44 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.7rem] font-mono outline-none dark:text-slate-200 appearance-none cursor-pointer focus:ring-1 focus:ring-teal-500"
+//             >
+//               <option>All Locations</option>
+//               <option value="Burin">Burin</option>
+//               <option value="Grand Falls">Grand Falls</option>
+//               <option value="Marystown">Marystown</option>
+//               <option value="St. John’s / Mount Pearl">St. John’s / Mount Pearl</option>
+//             </select>
+//           </div>
+
+//           <div className="flex items-center gap-2 w-full lg:w-auto">
+//             <button className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-slate-600 dark:text-slate-400 font-medium text-[0.7rem] uppercase tracking-wider transition-all hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+//               <Download size={14} /> Export
+//             </button>
+//             <button 
+//               onClick={() => setIsRegModalOpen(true)} 
+//               className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-teal-500 hover:bg-teal-600 px-5 py-2 text-white rounded-lg shadow-sm transition-all active:scale-95 text-[0.7rem] font-semibold whitespace-nowrap"
+//             >
+//               <Plus size={14} /> New Instructor
+//             </button>
+//           </div>
+//         </div>
+//       </header>
+
+//       {/* MAIN CONTENT */}
+//       <main className="p-4 md:p-8 space-y-5 max-w-7xl mx-auto w-full">
+//         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+//           <div>
+//            <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
+//               Instructor <span className="text-teal-600 dark:text-teal-400">Management</span>
+//             </h1>
+//             <p className="text-[0.8rem] font-soro text-slate-500 mt-0.5">Manage performance, status, and student assignments</p>
+//           </div>
+//           <div className="text-[0.6rem] font-mono text-slate-400">
+//             Total: {filteredInstructors.length} instructors
+//           </div>
+//         </div>
+
+//         {/* CARDS - Mobile View */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:hidden">
+//           {filteredInstructors.map((ins) => (
+//             <div key={ins.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm space-y-3">
+//               <div className="flex justify-between items-start">
+//                 <div className="flex items-center gap-3">
+//                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-semibold text-white text-sm ${ins.status === 'Blocked' ? 'bg-slate-400' : 'bg-teal-500'}`}>
+//                     {ins.name[0]}
+//                   </div>
+//                   <div>
+//                     <h3 className="font-medium text-sm text-slate-800 dark:text-white">{ins.name}</h3>
+//                     <p className="text-[0.6rem] font-mono text-slate-500">{ins.id} • {ins.location}</p>
+//                   </div>
+//                 </div>
+//                 <span className={`px-2 py-0.5 rounded text-[0.55rem] font-mono font-semibold uppercase ${
+//                   ins.status === "Active" 
+//                     ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
+//                     : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+//                 }`}>
+//                   {ins.status}
+//                 </span>
+//               </div>
+              
+//               <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+//                 <span className="text-[0.6rem] font-mono font-semibold text-slate-500">Success: {ins.success}%</span>
+//                 <button 
+//                   onClick={() => setSelectedInstructor(ins)} 
+//                   className="p-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+//                 >
+//                   <Eye size={14} />
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//         {/* TABLE - Desktop View */}
+//         <div className="hidden lg:block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-xl overflow-hidden">
+//           <div className="overflow-x-auto">
+//             <table className="w-full text-left">
+//               <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+//                 <tr className="text-[0.6rem] font-mono font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+//                   <th className="px-6 py-4">Instructor Information</th>
+//                   <th className="px-6 py-4">Location</th>
+//                   <th className="px-6 py-4">Current Status</th>
+//                   <th className="px-6 py-4 text-right">Action</th>
+//                 </tr>
+//               </thead>
+//               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+//                 {filteredInstructors.map((ins) => (
+//                   <tr key={ins.id} className="group hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+//                     <td className="px-6 py-4">
+//                       <div className="flex items-center gap-3">
+//                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-semibold text-white text-sm ${ins.status === 'Blocked' ? 'bg-slate-400' : 'bg-teal-500'}`}>
+//                           {ins.name[0]}
+//                         </div>
+//                         <div>
+//                           <p className="text-[0.8rem] font-medium text-slate-800 dark:text-white leading-tight">{ins.name}</p>
+//                           <p className="text-[0.6rem] font-mono text-slate-500 mt-0.5">ID: {ins.id}</p>
+//                         </div>
+//                       </div>
+//                     </td>
+//                     <td className="px-6 py-4">
+//                       <div className="flex items-center gap-1.5">
+//                         <span className="text-[0.7rem] text-slate-600 dark:text-slate-300">{ins.location}</span>
+//                       </div>
+//                     </td>
+//                     <td className="px-6 py-4">
+//                       <span className={`inline-flex px-2 py-0.5 rounded text-[0.55rem] font-mono font-semibold uppercase ${
+//                         ins.status === "Active" 
+//                           ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
+//                           : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+//                       }`}>
+//                         {ins.status}
+//                       </span>
+//                     </td>
+//                     <td className="px-6 py-4 text-right">
+//                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+//                         <button 
+//                           onClick={() => setSelectedInstructor(ins)} 
+//                           className="p-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+//                           title="View Details"
+//                         >
+//                           <Eye size={14} />
+//                         </button>
+//                       </div>
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
+          
+//           {filteredInstructors.length === 0 && (
+//             <div className="py-12 text-center">
+//               <p className="text-[0.7rem] font-mono text-slate-400">No instructors found matching your filters.</p>
+//             </div>
+//           )}
+//         </div>
+//       </main>
+
+//       <InstructorRegistrationModal 
+//         isOpen={isRegModalOpen} 
+//         onClose={() => setIsRegModalOpen(false)} 
+//         onAdd={handleAddInstructor}
+//       />
+      
+//       {selectedInstructor && (
+//         <InstructorDetailModal 
+//           instructor={selectedInstructor} 
+//           onClose={() => setSelectedInstructor(null)} 
+//           allInstructors={instructors.filter(i => i.id !== selectedInstructor.id)}
+//           onUpdate={handleUpdateInstructor}
+//           onToggleBlock={handleToggleBlockStatus}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Instructors;
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState } from 'react';
 import InstructorDetailModal from '../components/InstructorDetailModal';
 import InstructorRegistrationModal from '../components/InstructorRegistrationModal';
+import Pagination from '../components/Pagination';
 import { 
-  Search, Eye, Download, Plus
+  Search, ScanEye, MapPin, Mail, Phone, Calendar, 
+  Trash2, UserPlus, Download, Plus, ChevronRight
 } from 'lucide-react';
 
 const Instructors = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [locationFilter, setLocationFilter] = useState('All Locations');
+  const [locationFilter, setLocationFilter] = useState('All');
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [isRegModalOpen, setIsRegModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const [instructors, setInstructors] = useState([
     { 
@@ -373,6 +684,8 @@ const Instructors = () => {
     }
   ]);
 
+  const locations = ["Burin", "Grand Falls", "Marystown", "St. John’s / Mount Pearl"];
+
   const handleAddInstructor = (newIns) => {
     const formattedInstructor = {
       ...newIns,
@@ -399,170 +712,237 @@ const Instructors = () => {
     ));
   };
 
+  const handleDeleteInstructor = (id) => {
+    if (window.confirm('Are you sure you want to delete this instructor?')) {
+      setInstructors(prev => prev.filter(ins => ins.id !== id));
+    }
+  };
+
   const filteredInstructors = instructors.filter(ins => {
-    const matchesLocation = locationFilter === 'All Locations' || ins.location === locationFilter;
+    const matchesLocation = locationFilter === 'All' || ins.location === locationFilter;
     const matchesSearch = ins.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          ins.id.toLowerCase().includes(searchTerm.toLowerCase());
+                          ins.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          ins.email.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesLocation && matchesSearch;
   });
 
+  // Pagination logic
+  const totalItems = filteredInstructors.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedInstructors = filteredInstructors.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 transition-colors duration-300 font-['Sora','Inter',system-ui]">
+    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors overflow-hidden">
       
-      {/* HEADER */}
-      <header className="w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 md:px-8 py-4 sticky top-0 z-20 transition-all">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-3 w-full lg:w-auto">
-            <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 w-4 h-4" />
-              <input 
-                className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.7rem] font-mono outline-none focus:ring-1 focus:ring-teal-500 dark:text-slate-200 placeholder:text-slate-400" 
-                placeholder="Search name or ID..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      {/* 1. ADAPTIVE HEADER */}
+      <header className="px-4 md:px-8 pt-6 md:pt-8 pb-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <div>
+            <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
+              Instructor <span className="text-teal-600 dark:text-teal-400">Management</span>
+            </h1>
+            <p className="text-[0.65rem] font-sora text-slate-500 dark:text-slate-400 mt-0.5 tracking-wider">
+              Manage instructor profiles, performance metrics, and student assignments
+            </p>
+          </div>
+        </div>
+
+        {/* Filter Bar */}
+        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-3 mb-6">
+          <div className="grid grid-cols-2 md:flex gap-2 flex-1">
+            
+            {/* Location Filter */}
+            <div className="group relative">
+              <select 
+                value={locationFilter} 
+                onChange={(e) => { setLocationFilter(e.target.value); setCurrentPage(1); }}
+                className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[0.7rem] font-sora dark:text-slate-300 outline-none focus:ring-1 focus:ring-teal-500 group-hover:border-teal-400 cursor-pointer transition-all"
+              >
+                <option value="All">All Locations</option>
+                {locations.map(loc => (
+                  <option key={loc} value={loc}>{loc}</option>
+                ))}
+              </select>
             </div>
-            <select 
-              value={locationFilter} 
-              onChange={(e) => setLocationFilter(e.target.value)}
-              className="w-full md:w-44 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.7rem] font-mono outline-none dark:text-slate-200 appearance-none cursor-pointer focus:ring-1 focus:ring-teal-500"
-            >
-              <option>All Locations</option>
-              <option value="Burin">Burin</option>
-              <option value="Grand Falls">Grand Falls</option>
-              <option value="Marystown">Marystown</option>
-              <option value="St. John’s / Mount Pearl">St. John’s / Mount Pearl</option>
-            </select>
+
+            <div className="group relative hidden md:block">
+              <select 
+                className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[0.7rem] font-sora dark:text-slate-300 outline-none focus:ring-1 focus:ring-teal-500 group-hover:border-teal-400 cursor-pointer transition-all"
+              >
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Blocked</option>
+              </select>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 w-full lg:w-auto">
-            <button className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-slate-600 dark:text-slate-400 font-medium text-[0.7rem] uppercase tracking-wider transition-all hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-              <Download size={14} /> Export
-            </button>
-            <button 
-              onClick={() => setIsRegModalOpen(true)} 
-              className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-teal-500 hover:bg-teal-600 px-5 py-2 text-white rounded-lg shadow-sm transition-all active:scale-95 text-[0.7rem] font-semibold whitespace-nowrap"
-            >
-              <Plus size={14} /> New Instructor
-            </button>
+          <div className="relative w-full md:max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5" />
+            <input
+              type="text"
+              placeholder="Search by Name, ID or Email..."
+              value={searchTerm}
+              onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[0.7rem] font-sora dark:text-slate-300 outline-none focus:ring-1 focus:ring-teal-500 placeholder:text-slate-400"
+            />
           </div>
+        </div>
+
+        {/* Action Buttons Row */}
+        <div className="flex justify-end gap-3 mb-4">
+          <button className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.7rem] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2">
+            <Download size={14} /> Export
+          </button>
+          <button 
+            onClick={() => setIsRegModalOpen(true)} 
+            className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-[0.7rem] font-medium transition-all flex items-center gap-2"
+          >
+            <Plus size={14} /> New Instructor
+          </button>
         </div>
       </header>
 
-      {/* MAIN CONTENT */}
-      <main className="p-4 md:p-8 space-y-5 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
-                  Instructor  <span className="text-teal-600 dark:text-teal-400">Management</span>
-                </h1>
-            <p className="text-[0.8rem] font-soro text-slate-500 mt-0.5">Manage performance, status, and student assignments</p>
-          </div>
-          <div className="text-[0.6rem] font-mono text-slate-400">
-            Total: {filteredInstructors.length} instructors
-          </div>
-        </div>
-
-        {/* CARDS - Mobile View */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:hidden">
-          {filteredInstructors.map((ins) => (
-            <div key={ins.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm space-y-3">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-semibold text-white text-sm ${ins.status === 'Blocked' ? 'bg-slate-400' : 'bg-teal-500'}`}>
-                    {ins.name[0]}
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-sm text-slate-800 dark:text-white">{ins.name}</h3>
-                    <p className="text-[0.6rem] font-mono text-slate-500">{ins.id} • {ins.location}</p>
-                  </div>
+      {/* 2. RESPONSIVE TABLE CONTAINER */}
+      <div className="flex-1 px-4 md:px-8 pb-8 overflow-y-auto custom-scrollbar">
+        
+        {/* MOBILE VIEW */}
+        <div className="grid grid-cols-1 gap-4 md:hidden">
+          {paginatedInstructors.map((ins) => (
+            <div key={ins.id} className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-all">
+              {ins.status === 'Blocked' && <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />}
+              
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="text-[0.85rem] font-medium text-slate-800 dark:text-white">{ins.name}</h3>
+                  <p className="text-[0.6rem] font-sora text-slate-400 uppercase tracking-tighter">ID: {ins.id}</p>
                 </div>
-                <span className={`px-2 py-0.5 rounded text-[0.55rem] font-mono font-semibold uppercase ${
-                  ins.status === "Active" 
-                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
-                    : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+                <span className={`px-2 py-0.5 rounded text-[0.6rem] font-sora font-semibold uppercase tracking-wider ${
+                  ins.status === 'Active' 
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                 }`}>
                   {ins.status}
                 </span>
               </div>
-              
-              <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-[0.6rem] font-mono font-semibold text-slate-500">Success: {ins.success}%</span>
+
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2 text-[0.7rem] text-slate-600 dark:text-slate-400">
+                  <Mail size={12} className="text-teal-500" /> {ins.email}
+                </div>
+                <div className="flex items-center gap-2 text-[0.7rem] text-slate-600 dark:text-slate-400">
+                  <MapPin size={12} className="text-teal-500" /> {ins.location}
+                </div>
+                <div className="flex items-center gap-2 text-[0.7rem] text-slate-600 dark:text-slate-400">
+                  <Phone size={12} className="text-teal-500" /> {ins.contact}
+                </div>
+              </div>
+
+              <div className="flex gap-2">
                 <button 
-                  onClick={() => setSelectedInstructor(ins)} 
-                  className="p-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+                  onClick={() => setSelectedInstructor(ins)}
+                  className="flex-1 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-[0.7rem] font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5"
                 >
-                  <Eye size={14} />
+                  <ScanEye size={14} /> View Details
                 </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* TABLE - Desktop View */}
-        <div className="hidden lg:block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                <tr className="text-[0.6rem] font-mono font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  <th className="px-6 py-4">Instructor Information</th>
-                  <th className="px-6 py-4">Location</th>
-                  <th className="px-6 py-4">Current Status</th>
-                  <th className="px-6 py-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {filteredInstructors.map((ins) => (
-                  <tr key={ins.id} className="group hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-semibold text-white text-sm ${ins.status === 'Blocked' ? 'bg-slate-400' : 'bg-teal-500'}`}>
-                          {ins.name[0]}
-                        </div>
-                        <div>
-                          <p className="text-[0.8rem] font-medium text-slate-800 dark:text-white leading-tight">{ins.name}</p>
-                          <p className="text-[0.6rem] font-mono text-slate-500 mt-0.5">ID: {ins.id}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[0.7rem] text-slate-600 dark:text-slate-300">{ins.location}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex px-2 py-0.5 rounded text-[0.55rem] font-mono font-semibold uppercase ${
-                        ins.status === "Active" 
-                          ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
-                          : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+        {/* DESKTOP VIEW */}
+        <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm transition-all">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
+              <tr className="text-[0.75rem] font-sora font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <th className="px-5 py-3">Instructor Details</th>
+                <th className="px-5 py-3">Location</th>
+                <th className="px-5 py-3">Contact</th>
+                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3 text-right">Actions</th>
+               </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {paginatedInstructors.map((ins) => (
+                <tr key={ins.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors group">
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-semibold text-white ${
+                        ins.status === 'Blocked' 
+                          ? 'bg-slate-400 dark:bg-slate-600' 
+                          : 'bg-teal-500'
                       }`}>
-                        {ins.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                        <button 
-                          onClick={() => setSelectedInstructor(ins)} 
-                          className="p-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
-                          title="View Details"
-                        >
-                          <Eye size={14} />
-                        </button>
+                        {ins.name.charAt(0)}
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
+                      <div>
+                        <div className="text-[0.8rem] font-medium text-slate-800 dark:text-white leading-tight">
+                          {ins.name}
+                        </div>
+                        <div className="text-[0.65rem] text-slate-500 mt-0.5 font-sora">
+                          {ins.email}
+                        </div>
+                      </div>
+                    </div>
+                   </td>
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-1.5 text-[0.75rem] dark:text-slate-300">
+                      <MapPin size={12} className="text-slate-400 shrink-0" />
+                      <span>{ins.location}</span>
+                    </div>
+                    <div className="text-[0.6rem] font-sora text-slate-400 mt-1">Success: {ins.success}%</div>
+                   </td>
+                  <td className="px-5 py-3">
+                    <div className="text-[0.7rem] text-slate-600 dark:text-slate-300">{ins.contact}</div>
+                    <div className="text-[0.6rem] font-sora text-slate-400 mt-1">{ins.vehicle} • {ins.plate}</div>
+                   </td>
+                  <td className="px-5 py-3">
+                    <span className={`inline-flex px-2 py-0.5 rounded text-[0.6rem] font-sora font-semibold uppercase tracking-wider ${
+                      ins.status === 'Active' 
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                        : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                    }`}>
+                      {ins.status}
+                    </span>
+                   </td>
+                  <td className="px-5 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {/* View Button - Always visible */}
+                      <button 
+                        onClick={() => setSelectedInstructor(ins)} 
+                        className="group relative p-1.5 text-slate-400 dark:text-slate-500 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 active:scale-95"
+                        title="View Instructor Details"
+                      >
+                        <ScanEye size={18} className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                      </button>
+                    </div>
+                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           {filteredInstructors.length === 0 && (
-            <div className="py-12 text-center">
-              <p className="text-[0.7rem] font-mono text-slate-400">No instructors found matching your filters.</p>
+            <div className="py-16 text-center text-slate-400 dark:text-slate-500 text-[0.7rem] font-sora">
+              No instructors found for these filters.
             </div>
           )}
         </div>
-      </main>
+      </div>
+
+      {/* Pagination */}
+      {totalItems > itemsPerPage && (
+        <div className="flex justify-center py-6">
+          <Pagination 
+            currentPage={currentPage} 
+            totalItems={totalItems} 
+            itemsPerPage={itemsPerPage} 
+            onPageChange={handlePageChange} 
+          />
+        </div>
+      )}
 
       <InstructorRegistrationModal 
         isOpen={isRegModalOpen} 
@@ -577,6 +957,7 @@ const Instructors = () => {
           allInstructors={instructors.filter(i => i.id !== selectedInstructor.id)}
           onUpdate={handleUpdateInstructor}
           onToggleBlock={handleToggleBlockStatus}
+          onDelete={handleDeleteInstructor}
         />
       )}
     </div>

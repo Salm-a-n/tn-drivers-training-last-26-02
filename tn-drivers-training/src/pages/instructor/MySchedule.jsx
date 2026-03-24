@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  CheckCircle, Clock, MapPin, Eye, 
+  CheckCircle, Clock, MapPin, ScanEye, 
   Search, CalendarDays, Edit3, X, 
   RotateCcw, History, Calendar as CalendarIcon,
   ChevronLeft, ChevronRight, UserPlus, Award, Save, Loader2, Briefcase
@@ -291,10 +291,10 @@ const InstructorSchedule = () => {
         
         {/* Header */}
         <div>
-          <h1 className="text-xl md:text-2xl font-['Sora'] font-bold tracking-tight text-slate-800 dark:text-white">
-            Instructor <span className="text-teal-600">Schedule</span>
-          </h1>
-          <p className="text-[0.65rem] font-['DM_Mono'] text-slate-500 dark:text-slate-400 mt-0.5 tracking-wider">
+          <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
+              Instructor <span className="text-teal-600 dark:text-teal-400">Schedule</span>
+            </h1>
+          <p className="text-[0.65rem] font-soro text-slate-500 dark:text-slate-400 mt-0.5 tracking-wider">
             Manage your daily lessons and student sessions
           </p>
         </div>
@@ -308,7 +308,7 @@ const InstructorSchedule = () => {
         <Briefcase size={18} className="text-teal-600 dark:text-teal-400" />
       </div>
       <div>
-        <h3 className="text-xs font-['DM_Mono'] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Duty Shift</h3>
+        <h3 className="text-xs font-soro font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Duty Shift</h3>
         <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">Select your current shift assignment</p>
       </div>
     </div>
@@ -328,19 +328,19 @@ const InstructorSchedule = () => {
     {/* Shift Details Cards */}
     <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
       <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center border border-slate-100 dark:border-slate-700">
-        <p className="text-[9px] font-['DM_Mono'] font-bold uppercase text-slate-400 dark:text-slate-500">Period</p>
+        <p className="text-[9px] font-soro font-bold uppercase text-slate-400 dark:text-slate-500">Period</p>
         <p className="text-sm font-['DM_Sans'] font-semibold text-slate-700 dark:text-slate-300 mt-1">
           {currentShift.startDate} - {currentShift.endDate}
         </p>
       </div>
       <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center border border-slate-100 dark:border-slate-700">
-        <p className="text-[9px] font-['DM_Mono'] font-bold uppercase text-slate-400 dark:text-slate-500">Daily Hours</p>
+        <p className="text-[9px] font-soro font-bold uppercase text-slate-400 dark:text-slate-500">Daily Hours</p>
         <p className="text-sm font-['DM_Sans'] font-semibold text-slate-700 dark:text-slate-300 mt-1">
           {currentShift.startTime} - {currentShift.endTime}
         </p>
       </div>
       <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center border border-slate-100 dark:border-slate-700">
-        <p className="text-[9px] font-['DM_Mono'] font-bold uppercase text-slate-400 dark:text-slate-500">Location</p>
+        <p className="text-[9px] font-soro font-bold uppercase text-slate-400 dark:text-slate-500">Location</p>
         <p className="text-sm font-['DM_Sans'] font-semibold text-slate-700 dark:text-slate-300 mt-1">
           {currentShift.location}
         </p>
@@ -355,7 +355,7 @@ const InstructorSchedule = () => {
             <button 
               key={tab} 
               onClick={() => setActiveTab(tab)} 
-              className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-lg text-[9px] md:text-[10px] font-['DM_Mono'] font-bold uppercase tracking-wider transition-all duration-300 ${
+              className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-lg text-[9px] md:text-[10px] font-soro font-bold uppercase tracking-wider transition-all duration-300 ${
                 activeTab === tab ? "bg-teal-600 text-white shadow-sm" : "text-slate-500 hover:text-teal-600 dark:hover:bg-slate-800"
               }`}
             >
@@ -381,7 +381,7 @@ const InstructorSchedule = () => {
               <select 
                 value={filterArea} 
                 onChange={(e) => setFilterArea(e.target.value)} 
-                className="px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 font-['DM_Mono'] font-bold text-xs text-slate-800 dark:text-white outline-none cursor-pointer"
+                className="px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 font-soro font-bold text-xs text-slate-800 dark:text-white outline-none cursor-pointer"
               >
                 {burinAreas.map(area => <option key={area} value={area}>{area}</option>)}
               </select>
@@ -395,12 +395,12 @@ const InstructorSchedule = () => {
                       <tr key={s.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 flex items-center justify-center font-['DM_Mono'] font-bold text-sm">
+                            <div className="w-9 h-9 rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 flex items-center justify-center font-soro font-bold text-sm">
                               {s.name.charAt(0)}
                             </div>
                             <div>
                               <p className="text-sm font-['DM_Sans'] font-semibold text-slate-800 dark:text-white">{s.name}</p>
-                              <p className="text-[10px] font-['DM_Mono'] text-slate-500">{s.area}</p>
+                              <p className="text-[10px] font-soro text-slate-500">{s.area}</p>
                             </div>
                           </div>
                           </td>
@@ -414,7 +414,7 @@ const InstructorSchedule = () => {
                                 endTime: currentShift.endTime 
                               }); 
                             }} 
-                            className="px-4 py-2 bg-teal-600 text-white rounded-lg font-['DM_Mono'] font-bold text-[9px] uppercase hover:bg-teal-700 transition-all shadow-sm"
+                            className="px-4 py-2 bg-teal-600 text-white rounded-lg font-soro font-bold text-[9px] uppercase hover:bg-teal-700 transition-all shadow-sm"
                           >
                             Schedule
                           </button>
@@ -426,7 +426,7 @@ const InstructorSchedule = () => {
               </div>
               {availableStudents.length === 0 && (
                 <div className="p-8 text-center">
-                  <p className="text-slate-400 font-['DM_Mono'] text-sm">No students available to schedule</p>
+                  <p className="text-slate-400 font-soro text-sm">No students available to schedule</p>
                 </div>
               )}
             </div>
@@ -439,13 +439,13 @@ const InstructorSchedule = () => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="text-teal-600" size={18} />
-                <h3 className="text-xs font-['DM_Mono'] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Active Sessions</h3>
+                <h3 className="text-xs font-soro font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Active Sessions</h3>
               </div>
               <input 
                 type="date" 
                 value={scheduleDateFilter} 
                 onChange={(e) => setScheduleDateFilter(e.target.value)} 
-                className="w-full md:w-auto px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 font-['DM_Mono'] font-bold text-xs text-slate-800 dark:text-white outline-none" 
+                className="w-full md:w-auto px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 font-soro font-bold text-xs text-slate-800 dark:text-white outline-none" 
               />
             </div>
 
@@ -459,15 +459,15 @@ const InstructorSchedule = () => {
                       </div>
                       <div>
                         <p className="font-['Sora'] font-bold text-slate-800 dark:text-white text-base leading-none mb-1">{s.name}</p>
-                        <p className="text-[9px] font-['DM_Mono'] font-bold text-teal-600 uppercase flex items-center gap-1">
+                        <p className="text-[9px] font-soro font-bold text-teal-600 uppercase flex items-center gap-1">
                           <MapPin size={10} /> {s.pickup}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
                       <div className="text-left md:text-right">
-                        <p className="text-sm font-['DM_Mono'] font-bold text-slate-700 dark:text-slate-200 leading-none mb-1">{s.timeSlot}</p>
-                        <p className="text-[8px] font-['DM_Mono'] font-bold text-slate-400 uppercase">{s.date}</p>
+                        <p className="text-sm font-soro font-bold text-slate-700 dark:text-slate-200 leading-none mb-1">{s.timeSlot}</p>
+                        <p className="text-[8px] font-soro font-bold text-slate-400 uppercase">{s.date}</p>
                       </div>
                       <div className="flex items-center gap-1">
                         <button 
@@ -493,10 +493,11 @@ const InstructorSchedule = () => {
                         </button>
                         <button 
                           onClick={() => setViewingStudent(s)} 
-                          className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-teal-600 rounded-lg transition-all"
+                          className="group relative p-1.5 text-slate-400 dark:text-slate-500 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 active:scale-95"   
                           title="View Student"
                         >
-                          <Eye size={16} />
+                        <ScanEye size={18} className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
+
                         </button>
                       </div>
                     </div>
@@ -505,7 +506,7 @@ const InstructorSchedule = () => {
               ) : (
                 <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-xl border border-slate-200 dark:border-slate-800">
                   <CalendarIcon size={40} className="mx-auto text-slate-400 mb-3" />
-                  <p className="text-slate-500 font-['DM_Mono'] text-sm">No active sessions found</p>
+                  <p className="text-slate-500 font-soro text-sm">No active sessions found</p>
                 </div>
               )}
             </div>
@@ -518,13 +519,13 @@ const InstructorSchedule = () => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="flex items-center gap-2">
                 <History size={18} className="text-teal-600" />
-                <h3 className="text-xs font-['DM_Mono'] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Completed Sessions</h3>
+                <h3 className="text-xs font-soro font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Completed Sessions</h3>
               </div>
               <input 
                 type="date" 
                 value={historyDateFilter} 
                 onChange={(e) => setHistoryDateFilter(e.target.value)} 
-                className="w-full md:w-auto px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 font-['DM_Mono'] font-bold text-xs text-slate-800 dark:text-white outline-none" 
+                className="w-full md:w-auto px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 font-soro font-bold text-xs text-slate-800 dark:text-white outline-none" 
               />
             </div>
             
@@ -534,9 +535,9 @@ const InstructorSchedule = () => {
                   <div>
                     <p className="font-['DM_Sans'] font-semibold text-slate-800 dark:text-white text-sm leading-none mb-1">{s.name}</p>
                     <div className="flex flex-wrap items-center gap-3 mt-1">
-                      <p className="text-[9px] font-['DM_Mono'] font-bold text-slate-400 uppercase">{s.date} • {s.timeSlot}</p>
+                      <p className="text-[9px] font-soro font-bold text-slate-400 uppercase">{s.date} • {s.timeSlot}</p>
                       {s.evaluation && (
-                        <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 rounded-full text-[8px] font-['DM_Mono'] font-bold">
+                        <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 rounded-full text-[8px] font-soro font-bold">
                           Score: {s.evaluation.score}%
                         </span>
                       )}
@@ -544,7 +545,7 @@ const InstructorSchedule = () => {
                   </div>
                   <button 
                     onClick={() => toggleStatus(s.id)} 
-                    className="px-3 py-1.5 bg-teal-600 text-white rounded-lg text-[8px] font-['DM_Mono'] font-bold uppercase hover:bg-teal-700 transition-all active:scale-95 flex items-center gap-1"
+                    className="px-3 py-1.5 bg-teal-600 text-white rounded-lg text-[8px] font-soro font-bold uppercase hover:bg-teal-700 transition-all active:scale-95 flex items-center gap-1"
                   >
                     <RotateCcw size={12} /> Restore
                   </button>
@@ -553,7 +554,7 @@ const InstructorSchedule = () => {
             ) : (
               <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-xl border border-slate-200 dark:border-slate-800">
                 <History size={40} className="mx-auto text-slate-400 mb-3" />
-                <p className="text-slate-500 font-['DM_Mono'] text-sm">No completed sessions found</p>
+                <p className="text-slate-500 font-soro text-sm">No completed sessions found</p>
               </div>
             )}
           </div>
@@ -577,7 +578,7 @@ const InstructorSchedule = () => {
             </div>
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-[9px] font-['DM_Mono'] font-bold uppercase text-slate-500 ml-1">Session Date</label>
+                <label className="text-[9px] font-soro font-bold uppercase text-slate-500 ml-1">Session Date</label>
                 <input 
                   type="date" 
                   min={currentShift.startDate} 
@@ -589,7 +590,7 @@ const InstructorSchedule = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[9px] font-['DM_Mono'] font-bold uppercase text-slate-500 ml-1">Start</label>
+                  <label className="text-[9px] font-soro font-bold uppercase text-slate-500 ml-1">Start</label>
                   <input 
                     type="time" 
                     value={formData.startTime} 
@@ -598,7 +599,7 @@ const InstructorSchedule = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[9px] font-['DM_Mono'] font-bold uppercase text-slate-500 ml-1">End</label>
+                  <label className="text-[9px] font-soro font-bold uppercase text-slate-500 ml-1">End</label>
                   <input 
                     type="time" 
                     value={formData.endTime} 
@@ -609,7 +610,7 @@ const InstructorSchedule = () => {
               </div>
               <button 
                 onClick={editingSession ? handleUpdate : () => confirmSchedule(selectedForSchedule)} 
-                className="w-full py-3 bg-teal-600 text-white rounded-lg font-['DM_Mono'] font-bold text-[10px] uppercase tracking-wider hover:bg-teal-700 shadow-md transition-all active:scale-95"
+                className="w-full py-3 bg-teal-600 text-white rounded-lg font-soro font-bold text-[10px] uppercase tracking-wider hover:bg-teal-700 shadow-md transition-all active:scale-95"
               >
                 {editingSession ? "Confirm Update" : "Confirm Booking"}
               </button>
@@ -639,7 +640,7 @@ const InstructorSchedule = () => {
 
             <div className="space-y-5">
               <div>
-                <label className="text-[10px] font-['DM_Mono'] font-bold uppercase text-slate-500 mb-2 block">Assessment Type</label>
+                <label className="text-[10px] font-soro font-bold uppercase text-slate-500 mb-2 block">Assessment Type</label>
                 <input 
                   type="text"
                   value={evaluationForm.test_type}
@@ -650,7 +651,7 @@ const InstructorSchedule = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-['DM_Mono'] font-bold uppercase text-slate-500 mb-2 block">Score (0-100)</label>
+                <label className="text-[10px] font-soro font-bold uppercase text-slate-500 mb-2 block">Score (0-100)</label>
                 <div className="flex items-center gap-4">
                   <input 
                     type="range" 
@@ -664,7 +665,7 @@ const InstructorSchedule = () => {
                     {evaluationForm.score}%
                   </span>
                 </div>
-                <div className="flex justify-between text-[8px] font-['DM_Mono'] text-slate-400 mt-1">
+                <div className="flex justify-between text-[8px] font-soro text-slate-400 mt-1">
                   <span>Poor</span>
                   <span>Average</span>
                   <span>Excellent</span>
@@ -672,7 +673,7 @@ const InstructorSchedule = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-['DM_Mono'] font-bold uppercase text-slate-500 mb-2 block">Instructor Remarks</label>
+                <label className="text-[10px] font-soro font-bold uppercase text-slate-500 mb-2 block">Instructor Remarks</label>
                 <textarea 
                   rows={4}
                   value={evaluationForm.remarks}
@@ -685,14 +686,14 @@ const InstructorSchedule = () => {
               <div className="flex gap-3 pt-2">
                 <button 
                   onClick={() => setEvaluationModal(null)} 
-                  className="flex-1 py-3 text-sm font-['DM_Mono'] font-bold text-slate-500 hover:text-slate-700 transition-colors"
+                  className="flex-1 py-3 text-sm font-soro font-bold text-slate-500 hover:text-slate-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleSaveEvaluation}
                   disabled={savingEvaluation}
-                  className="flex-1 py-3 bg-teal-600 text-white rounded-lg font-['DM_Mono'] font-bold text-sm hover:bg-teal-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-teal-600 text-white rounded-lg font-soro font-bold text-sm hover:bg-teal-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {savingEvaluation ? <Loader2 size={16} className="animate-spin" /> : <Award size={16} />}
                   {savingEvaluation ? "Saving..." : "Save Evaluation"}

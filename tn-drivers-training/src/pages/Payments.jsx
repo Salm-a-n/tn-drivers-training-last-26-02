@@ -317,13 +317,443 @@
 
 
 
+// import React, { useState, useEffect, useCallback, useRef } from "react";
+// import SearchBar from "../components/SearchBar";
+// import Pagination from "../components/Pagination";
+// import { 
+//   Mail, Download, Wallet, Banknote, 
+//   CreditCard, Settings, CalendarDays, FileDown
+// } from "lucide-react";
+
+// const Payments = () => {
+//   // --- REF FOR SCROLL TARGET ---
+//   const topRef = useRef(null);
+
+//   // --- SERVER-SIDE STATE ---
+//   const [payments, setPayments] = useState([]);
+//   const [totalItems, setTotalItems] = useState(0);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filterDate, setFilterDate] = useState("all");
+//   const [startDate, setStartDate] = useState(""); 
+//   const [endDate, setEndDate] = useState("");     
+//   const [loading, setLoading] = useState(false);
+//   const [exactRevenue, setExactRevenue] = useState(0);
+
+//   const limit = 10;
+//   const [emailTemplate, setEmailTemplate] = useState(
+//     "Hi {name}, thank you for your payment of {amount} for the {course}. Your transaction ID is {txId}. You can download your receipt here: {link}"
+//   );
+
+//   const formatCAD = (amount) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(amount);
+
+//   // --- SCROLL TO TOP ON PAGE CHANGE ---
+//   useEffect(() => {
+//     if (topRef.current) {
+//       topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+//     }
+//     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+//     const scrollableParent = findScrollableParent(topRef.current);
+//     if (scrollableParent && scrollableParent !== document.documentElement) {
+//       scrollableParent.scrollTo({ top: 0, behavior: 'smooth' });
+//     }
+//   }, [currentPage]);
+
+//   const findScrollableParent = (element) => {
+//     if (!element) return null;
+//     let parent = element.parentElement;
+//     while (parent) {
+//       const style = window.getComputedStyle(parent);
+//       const overflowY = style.overflowY;
+//       if (
+//         (overflowY === 'auto' || overflowY === 'scroll') &&
+//         parent.scrollHeight > parent.clientHeight
+//       ) {
+//         return parent;
+//       }
+//       parent = parent.parentElement;
+//     }
+//     return document.documentElement;
+//   };
+
+//   const fetchPayments = useCallback(async () => {
+//     setLoading(true);
+//     try {
+//       await new Promise(resolve => setTimeout(resolve, 600)); 
+//       const mockData = Array.from({ length: limit }, (_, i) => ({
+//         id: 2000 + i + (currentPage * limit),
+//         studentName: ["Alex Rivera", "Sam Chen", "Jordan Smith", "Maria Garcia", "Yuki Tanaka"][i % 5],
+//         course: "Class 5 GDL Package",
+//         amount: 450.00,
+//         method: i % 3 === 0 ? "Cash" : "Interac e-Transfer",
+//         transactionId: i % 3 === 0 ? `RCPT-${i}-CSH` : `TXN-${i}VXB7`,
+//         date: new Date().toISOString().split('T')[0],
+//         email: "student@example.ca"
+//       }));
+//       setPayments(mockData);
+//       setTotalItems(120); 
+//       setExactRevenue(filterDate === 'all' ? 45200.50 : 12450.00); 
+//     } catch (error) {
+//       console.error("Payment Fetch Error:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [currentPage, searchTerm, filterDate, startDate, endDate]);
+
+//   useEffect(() => {
+//     fetchPayments();
+//   }, [fetchPayments]);
+
+//   const handleSearch = useCallback((val) => {
+//     setSearchTerm(val);
+//     setCurrentPage(1); 
+//   }, []);
+
+//   const handlePageChange = useCallback((newPage) => {
+//     setCurrentPage(newPage);
+//   }, []);
+
+//   const handleSendInvoice = (pay) => {
+//     const message = emailTemplate
+//       .replace("{name}", pay.studentName)
+//       .replace("{amount}", formatCAD(pay.amount))
+//       .replace("{course}", pay.course)
+//       .replace("{txId}", pay.transactionId)
+//       .replace("{link}", "www.drive-academy.ca/receipts/" + pay.id);
+
+//     window.location.href = `mailto:${pay.email}?subject=Payment Receipt&body=${encodeURIComponent(message)}`;
+//   };
+
+//   const handleDownloadAll = () => {
+//     // Create CSV data
+//     const headers = ["ID", "Date", "Student Name", "Email", "Transaction ID", "Method", "Amount"];
+//     const csvData = payments.map(pay => [
+//       pay.id,
+//       pay.date,
+//       pay.studentName,
+//       pay.email,
+//       pay.transactionId,
+//       pay.method,
+//       pay.amount
+//     ]);
+    
+//     const csvContent = [headers, ...csvData].map(row => row.join(",")).join("\n");
+//     const blob = new Blob([csvContent], { type: "text/csv" });
+//     const url = URL.createObjectURL(blob);
+//     const a = document.createElement("a");
+//     a.href = url;
+//     a.download = `payments_${new Date().toISOString().split('T')[0]}.csv`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     URL.revokeObjectURL(url);
+//   };
+
+//   return (
+//     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>
+//       {/* SCROLL ANCHOR */}
+//       <div ref={topRef} />
+      
+//       <div className="max-w-7xl mx-auto w-full px-4 md:px-8 py-6 md:py-8">
+//         <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
+//               Payment <span className="text-teal-600 dark:text-teal-400">Management </span>
+//             </h1>
+        
+//         {/* HEADER SECTION: REVENUE & DOWNLOAD BUTTON */}
+//         <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-8">
+//           <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm w-full md:w-auto">
+//             <div className="h-12 w-12 bg-teal-50 dark:bg-teal-900/20 text-teal-600 rounded-xl flex items-center justify-center shrink-0">
+//               <Wallet size={22} />
+//             </div>
+//             <div>
+//               <p className="text-[0.6rem] font-soro font-semibold text-slate-400 uppercase tracking-wider">
+//                 {filterDate === 'all' ? 'Total Revenue' : `${filterDate} Revenue`}
+//               </p>
+//               <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
+//                 {loading ? "..." : formatCAD(exactRevenue)}
+//               </h2>
+//             </div>
+//           </div>
+
+//           {/* Download All Button - Replaces Auto-Invoice */}
+//           <button 
+//             onClick={handleDownloadAll}
+//             className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[0.7rem] font-medium text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:border-teal-300 transition-all shadow-sm"
+//           >
+//             <FileDown size={16} className="text-teal-500" />
+//             Export All Payments
+//           </button>
+//         </div>
+
+//         {/* FILTERS & SEARCH */}
+//         <div className="space-y-4 mb-6">
+//           <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+//             <div className="lg:col-span-2">
+//               <SearchBar onSearch={handleSearch} placeholder="Search by Transaction ID / Email" />
+//             </div>
+//             <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
+//               {['all', 'today', 'yesterday', 'range'].map(t => (
+//                 <button 
+//                   key={t} 
+//                   onClick={() => {setFilterDate(t); setCurrentPage(1);}}
+//                   className={`px-3 py-2 rounded-lg font-soro text-[0.6rem] font-semibold uppercase tracking-wider transition-all border ${
+//                     filterDate === t 
+//                       ? 'bg-teal-500 border-teal-500 text-white shadow-sm' 
+//                       : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-teal-400 hover:text-teal-600'
+//                   }`}
+//                 >
+//                   {t === 'range' ? 'Custom Range' : t.charAt(0).toUpperCase() + t.slice(1)}
+//                 </button>
+//               ))}
+//             </div>
+//           </div>
+
+//           {filterDate === "range" && (
+//             <div className="flex flex-col sm:flex-row items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+//               <CalendarDays size={16} className="text-teal-500 shrink-0" />
+//               <div className="flex items-center gap-2 w-full">
+//                 <input 
+//                   type="date" 
+//                   value={startDate} 
+//                   onChange={(e) => setStartDate(e.target.value)} 
+//                   className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[0.7rem] font-mono dark:text-slate-200 outline-none focus:ring-1 focus:ring-teal-500" 
+//                 />
+//                 <span className="text-slate-400 text-[0.7rem]">→</span>
+//                 <input 
+//                   type="date" 
+//                   value={endDate} 
+//                   onChange={(e) => setEndDate(e.target.value)} 
+//                   className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[0.7rem] font-mono dark:text-slate-200 outline-none focus:ring-1 focus:ring-teal-500" 
+//                 />
+//               </div>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* DATA DISPLAY: TABLE (MD+) & CARDS (SM) */}
+//         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
+//           {/* DESKTOP TABLE - No Action Buttons */}
+//           <div className="hidden md:block overflow-x-auto">
+//             <table className="w-full text-left">
+//               <thead>
+//                 <tr className="bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
+//                   <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">ID / Date</th>
+//                   <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Student</th>
+//                   <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Transaction ID</th>
+//                   <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Method</th>
+//                   <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Amount</th>
+//                  </tr>
+//               </thead>
+//               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+//                 {loading ? (
+//                   <tr><td colSpan="5" className="py-16 text-center"><div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-teal-500 border-t-transparent"></div></td></tr>
+//                 ) : (
+//                   payments.map(pay => (
+//                     <tr key={pay.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+//                       <td className="px-5 py-3">
+//                         <div className="text-[0.7rem] font-soro font-semibold text-slate-800 dark:text-white">#{pay.id}</div>
+//                         <div className="text-[0.55rem] font-soro text-slate-400">{pay.date}</div>
+//                       </td>
+//                       <td className="px-5 py-3">
+//                         <div className="text-[0.75rem] font-medium text-slate-800 dark:text-white">{pay.studentName}</div>
+//                         <div className="text-[0.6rem] font-soro text-slate-400">{pay.email}</div>
+//                       </td>
+//                       <td className="px-5 py-3">
+//                         <span className="text-[0.65rem] font-soro text-slate-600 dark:text-slate-400">{pay.transactionId}</span>
+//                       </td>
+//                       <td className="px-5 py-3">
+//                         <span className="text-[0.65rem] font-medium text-slate-600 dark:text-slate-400">{pay.method}</span>
+//                       </td>
+//                       <td className="px-5 py-3">
+//                         <span className="text-[0.8rem] font-semibold text-teal-600 dark:text-teal-400">{formatCAD(pay.amount)}</span>
+//                       </td>
+//                     </tr>
+//                   ))
+//                 )}
+//               </tbody>
+//             </table>
+//           </div>
+
+//           {/* MOBILE CARDS - No Action Buttons */}
+//           <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+//             {loading ? (
+//               <div className="py-12 text-center"><div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-teal-500 border-t-transparent"></div></div>
+//             ) : (
+//               payments.map(pay => (
+//                 <div key={pay.id} className="p-4 space-y-2">
+//                   <div className="flex justify-between items-start">
+//                     <div>
+//                       <div className="text-[0.55rem] font-soro text-slate-400">#{pay.id} • {pay.date}</div>
+//                       <div className="text-[0.8rem] font-medium text-slate-800 dark:text-white">{pay.studentName}</div>
+//                     </div>
+//                     <div className="text-right">
+//                       <div className="text-[0.85rem] font-semibold text-teal-600">{formatCAD(pay.amount)}</div>
+//                       <div className="text-[0.55rem] font-soro text-slate-400 uppercase">{pay.method}</div>
+//                     </div>
+//                   </div>
+//                   <div className="text-[0.6rem] font-soro bg-slate-50 dark:bg-slate-800 p-2 rounded-lg text-slate-500 dark:text-slate-400 truncate">
+//                     {pay.transactionId}
+//                   </div>
+//                 </div>
+//               ))
+//             )}
+//           </div>
+
+//           <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex justify-center">
+//             <Pagination 
+//               currentPage={currentPage} 
+//               totalItems={totalItems} 
+//               itemsPerPage={limit} 
+//               onPageChange={handlePageChange} 
+//             />
+//           </div>
+//         </div>
+
+//         {/* EDITOR & PREVIEW SECTION */}
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+//           <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+//             <div className="flex items-center gap-2 mb-4">
+//               <Settings size={16} className="text-teal-500" />
+//               <h3 className="text-[0.7rem] font-soro font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Template Editor</h3>
+//             </div>
+//             <textarea 
+//               className="w-full h-32 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-1 focus:ring-teal-500 outline-none text-[0.7rem] font-mono text-slate-600 dark:text-slate-300 resize-none transition-all" 
+//               value={emailTemplate} 
+//               onChange={(e) => setEmailTemplate(e.target.value)} 
+//             />
+//             <div className="mt-3 flex flex-wrap gap-2">
+//               {['{name}', '{amount}', '{course}', '{txId}'].map(tag => (
+//                 <span key={tag} className="px-2 py-0.5 bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 rounded text-[0.55rem] font-mono font-semibold uppercase">{tag}</span>
+//               ))}
+//             </div>
+//           </div>
+          
+//           <div className="bg-teal-50 dark:bg-teal-900/10 p-5 rounded-xl border border-teal-100 dark:border-teal-800">
+//             <h4 className="text-[0.55rem] font-soro font-semibold uppercase tracking-wider text-teal-600 mb-3">Live Preview</h4>
+//             <div className="p-3 bg-white dark:bg-slate-800 rounded-lg text-[0.7rem] text-slate-600 dark:text-slate-400 italic leading-relaxed">
+//               "{emailTemplate
+//                 .replace('{name}', 'Alex Rivera')
+//                 .replace('{amount}', '$450.00')
+//                 .replace('{course}', 'Class 5 GDL')
+//                 .replace('{txId}', 'TXN-123456')}"
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Payments;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import { 
   Mail, Download, Wallet, Banknote, 
-  CreditCard, Settings, CalendarDays, FileDown
+  CreditCard, Settings, CalendarDays, FileDown, ScanEye,Eye, X
 } from "lucide-react";
+
+// Payment Details Modal Component
+const PaymentDetailsModal = ({ payment, onClose }) => {
+  const formatCAD = (amount) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(amount || 0);
+
+  // If payment is not available, don't render
+  if (!payment) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/30">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Payment Details</h2>
+            <p className="text-[0.65rem] font-mono text-slate-500">Transaction #{payment.id || 'N/A'}</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+          >
+            <X size={18} className="text-slate-400" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-6">
+          
+          {/* Amount Section */}
+          <div className="text-center border-b border-slate-100 dark:border-slate-800 pb-4">
+            <p className="text-[0.6rem] font-mono text-slate-400 mb-1">Total Amount</p>
+            <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">{formatCAD(payment.amount)}</p>
+          </div>
+
+          {/* Table-like Details */}
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Payment ID</span>
+              <span className="text-[0.85rem] font-medium text-slate-800 dark:text-white">{payment.id || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Date</span>
+              <span className="text-[0.85rem] text-slate-700 dark:text-slate-300">{payment.date || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Student Name</span>
+              <span className="text-[0.85rem] font-medium text-slate-800 dark:text-white">{payment.studentName || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Email</span>
+              <span className="text-[0.85rem] text-slate-600 dark:text-slate-300">{payment.email || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Course</span>
+              <span className="text-[0.85rem] text-slate-700 dark:text-slate-300">{payment.course || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Transaction ID</span>
+              <span className="text-[0.85rem] font-mono text-slate-600 dark:text-slate-400">{payment.transactionId || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Payment Method</span>
+              <span className="text-[0.85rem] text-slate-700 dark:text-slate-300">{payment.method || 'N/A'}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 py-2">
+              <span className="text-[0.65rem] font-mono font-semibold text-slate-500 uppercase tracking-wider">Amount</span>
+              <span className="text-[0.85rem] font-semibold text-teal-600 dark:text-teal-400">{formatCAD(payment.amount)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 flex justify-end">
+          <button 
+            onClick={onClose}
+            className="px-4 py-1.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-[0.7rem] font-medium transition-all"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Payments = () => {
   // --- REF FOR SCROLL TARGET ---
@@ -339,6 +769,8 @@ const Payments = () => {
   const [endDate, setEndDate] = useState("");     
   const [loading, setLoading] = useState(false);
   const [exactRevenue, setExactRevenue] = useState(0);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const limit = 10;
   const [emailTemplate, setEmailTemplate] = useState(
@@ -389,7 +821,8 @@ const Payments = () => {
         method: i % 3 === 0 ? "Cash" : "Interac e-Transfer",
         transactionId: i % 3 === 0 ? `RCPT-${i}-CSH` : `TXN-${i}VXB7`,
         date: new Date().toISOString().split('T')[0],
-        email: "student@example.ca"
+        email: `student${i}@example.ca`,
+        status: i % 2 === 0 ? "Completed" : "Pending"
       }));
       setPayments(mockData);
       setTotalItems(120); 
@@ -450,12 +883,23 @@ const Payments = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleViewPayment = (payment) => {
+    setSelectedPayment(payment);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>
       {/* SCROLL ANCHOR */}
       <div ref={topRef} />
       
       <div className="max-w-7xl mx-auto w-full px-4 md:px-8 py-6 md:py-8">
+        <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
+          Payment <span className="text-teal-600 dark:text-teal-400">Management</span>
+        </h1>
+        <p className="text-[0.65rem] font-sora text-slate-500 dark:text-slate-400 mt-0.5 tracking-wider mb-6">
+          Manage and track all financial transactions, invoices, and payment history
+        </p>
         
         {/* HEADER SECTION: REVENUE & DOWNLOAD BUTTON */}
         <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-8">
@@ -464,7 +908,7 @@ const Payments = () => {
               <Wallet size={22} />
             </div>
             <div>
-              <p className="text-[0.6rem] font-soro font-semibold text-slate-400 uppercase tracking-wider">
+              <p className="text-[0.6rem] font-sora font-semibold text-slate-400 uppercase tracking-wider">
                 {filterDate === 'all' ? 'Total Revenue' : `${filterDate} Revenue`}
               </p>
               <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
@@ -473,7 +917,7 @@ const Payments = () => {
             </div>
           </div>
 
-          {/* Download All Button - Replaces Auto-Invoice */}
+          {/* Download All Button */}
           <button 
             onClick={handleDownloadAll}
             className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[0.7rem] font-medium text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:border-teal-300 transition-all shadow-sm"
@@ -494,7 +938,7 @@ const Payments = () => {
                 <button 
                   key={t} 
                   onClick={() => {setFilterDate(t); setCurrentPage(1);}}
-                  className={`px-3 py-2 rounded-lg font-soro text-[0.6rem] font-semibold uppercase tracking-wider transition-all border ${
+                  className={`px-3 py-2 rounded-lg font-sora text-[0.6rem] font-semibold uppercase tracking-wider transition-all border ${
                     filterDate === t 
                       ? 'bg-teal-500 border-teal-500 text-white shadow-sm' 
                       : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-teal-400 hover:text-teal-600'
@@ -530,40 +974,49 @@ const Payments = () => {
 
         {/* DATA DISPLAY: TABLE (MD+) & CARDS (SM) */}
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
-          {/* DESKTOP TABLE - No Action Buttons */}
+          {/* DESKTOP TABLE - With View Button Column */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
-                  <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">ID / Date</th>
-                  <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Student</th>
-                  <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Transaction ID</th>
-                  <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Method</th>
-                  <th className="px-5 py-3 text-[0.6rem] font-soro font-semibold uppercase tracking-wider text-slate-500">Amount</th>
+                  <th className="px-5 py-3 text-[0.6rem] font-sora font-semibold uppercase tracking-wider text-slate-500">ID / Date</th>
+                  <th className="px-5 py-3 text-[0.6rem] font-sora font-semibold uppercase tracking-wider text-slate-500">Student</th>
+                  <th className="px-5 py-3 text-[0.6rem] font-sora font-semibold uppercase tracking-wider text-slate-500">Transaction ID</th>
+                  <th className="px-5 py-3 text-[0.6rem] font-sora font-semibold uppercase tracking-wider text-slate-500">Method</th>
+                  <th className="px-5 py-3 text-[0.6rem] font-sora font-semibold uppercase tracking-wider text-slate-500">Amount</th>
+                  <th className="px-5 py-3 text-center text-[0.6rem] font-sora font-semibold uppercase tracking-wider text-slate-500">View</th>
                  </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loading ? (
-                  <tr><td colSpan="5" className="py-16 text-center"><div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-teal-500 border-t-transparent"></div></td></tr>
+                  <tr><td colSpan="6" className="py-16 text-center"><div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-teal-500 border-t-transparent"></div></td></tr>
                 ) : (
                   payments.map(pay => (
-                    <tr key={pay.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <tr key={pay.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
                       <td className="px-5 py-3">
-                        <div className="text-[0.7rem] font-soro font-semibold text-slate-800 dark:text-white">#{pay.id}</div>
-                        <div className="text-[0.55rem] font-soro text-slate-400">{pay.date}</div>
+                        <div className="text-[0.7rem] font-sora font-semibold text-slate-800 dark:text-white">#{pay.id}</div>
+                        <div className="text-[0.55rem] font-sora text-slate-400">{pay.date}</div>
                       </td>
                       <td className="px-5 py-3">
                         <div className="text-[0.75rem] font-medium text-slate-800 dark:text-white">{pay.studentName}</div>
-                        <div className="text-[0.6rem] font-soro text-slate-400">{pay.email}</div>
+                        <div className="text-[0.6rem] font-sora text-slate-400">{pay.email}</div>
                       </td>
                       <td className="px-5 py-3">
-                        <span className="text-[0.65rem] font-soro text-slate-600 dark:text-slate-400">{pay.transactionId}</span>
+                        <span className="text-[0.65rem] font-sora text-slate-600 dark:text-slate-400">{pay.transactionId}</span>
                       </td>
                       <td className="px-5 py-3">
                         <span className="text-[0.65rem] font-medium text-slate-600 dark:text-slate-400">{pay.method}</span>
                       </td>
                       <td className="px-5 py-3">
                         <span className="text-[0.8rem] font-semibold text-teal-600 dark:text-teal-400">{formatCAD(pay.amount)}</span>
+                      </td>
+                      <td className="px-5 py-3 text-center">
+                        <button 
+                          onClick={() => handleViewPayment(pay)}
+                          className="group relative p-1.5 text-slate-400 dark:text-slate-500 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 active:scale-95"                          title="View Payment Details"
+                        >
+                          <ScanEye size={18} className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -572,8 +1025,8 @@ const Payments = () => {
             </table>
           </div>
 
-          {/* MOBILE CARDS - No Action Buttons */}
-          <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+          {/* MOBILE CARDS - With View Button */}
+          <div className="md:hidden divide-y divide-slate-300 dark:divide-slate-800">
             {loading ? (
               <div className="py-12 text-center"><div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-teal-500 border-t-transparent"></div></div>
             ) : (
@@ -581,16 +1034,25 @@ const Payments = () => {
                 <div key={pay.id} className="p-4 space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="text-[0.55rem] font-soro text-slate-400">#{pay.id} • {pay.date}</div>
+                      <div className="text-[0.55rem] font-sora text-slate-400">#{pay.id} • {pay.date}</div>
                       <div className="text-[0.8rem] font-medium text-slate-800 dark:text-white">{pay.studentName}</div>
                     </div>
                     <div className="text-right">
                       <div className="text-[0.85rem] font-semibold text-teal-600">{formatCAD(pay.amount)}</div>
-                      <div className="text-[0.55rem] font-soro text-slate-400 uppercase">{pay.method}</div>
+                      <div className="text-[0.55rem] font-sora text-slate-400 uppercase">{pay.method}</div>
                     </div>
                   </div>
-                  <div className="text-[0.6rem] font-soro bg-slate-50 dark:bg-slate-800 p-2 rounded-lg text-slate-500 dark:text-slate-400 truncate">
+                  <div className="text-[0.6rem] font-sora bg-slate-50 dark:bg-slate-800 p-2 rounded-lg text-slate-500 dark:text-slate-400 truncate">
                     {pay.transactionId}
+                  </div>
+                  <div className="flex justify-end">
+                    <button 
+                      onClick={() => handleViewPayment(pay)}
+                          className="group relative p-1.5 text-slate-400 dark:text-slate-500 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 active:scale-95"   
+                      title="View Payment Details"
+                    >
+                        <ScanEye size={18} className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                    </button>
                   </div>
                 </div>
               ))
@@ -612,7 +1074,7 @@ const Payments = () => {
           <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
               <Settings size={16} className="text-teal-500" />
-              <h3 className="text-[0.7rem] font-soro font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Template Editor</h3>
+              <h3 className="text-[0.7rem] font-sora font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Template Editor</h3>
             </div>
             <textarea 
               className="w-full h-32 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-1 focus:ring-teal-500 outline-none text-[0.7rem] font-mono text-slate-600 dark:text-slate-300 resize-none transition-all" 
@@ -627,7 +1089,7 @@ const Payments = () => {
           </div>
           
           <div className="bg-teal-50 dark:bg-teal-900/10 p-5 rounded-xl border border-teal-100 dark:border-teal-800">
-            <h4 className="text-[0.55rem] font-soro font-semibold uppercase tracking-wider text-teal-600 mb-3">Live Preview</h4>
+            <h4 className="text-[0.55rem] font-sora font-semibold uppercase tracking-wider text-teal-600 mb-3">Live Preview</h4>
             <div className="p-3 bg-white dark:bg-slate-800 rounded-lg text-[0.7rem] text-slate-600 dark:text-slate-400 italic leading-relaxed">
               "{emailTemplate
                 .replace('{name}', 'Alex Rivera')
@@ -638,6 +1100,17 @@ const Payments = () => {
           </div>
         </div>
       </div>
+
+      {/* Payment Details Modal */}
+      {isModalOpen && selectedPayment && (
+        <PaymentDetailsModal 
+          payment={selectedPayment}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedPayment(null);
+          }}
+        />
+      )}
     </div>
   );
 };
