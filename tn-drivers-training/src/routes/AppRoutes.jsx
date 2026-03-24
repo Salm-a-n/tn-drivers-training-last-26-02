@@ -36,25 +36,25 @@ const AppRoutes = () => {
       <Route path="/register" element={<RegistrationPage/>}/>
       {/* ADMIN ROUTES */}
       <Route element={<AdminLayout />}>
-        <Route path="/admin" element={<Dashboard />} />
-        <Route path="/admin/students" element={<StudentPage />} />
-        <Route path="/admin/packages" element={<Packages />} />
-        <Route path="/admin/schedule" element={<Schedule />} />
-        <Route path="/admin/payments" element={<Payments />} />
-        <Route path="/admin/applications" element={<Application />} />
-        <Route path="/admin/instructors" element={<InstructorFleet />} />
-        <Route path="/admin/fleet" element={<FleetManagement />} />
-        <Route path="/admin/finances" element={<Finances />} />
-        <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Students" element={<StudentPage />} />
+        <Route path="/Packages" element={<Packages />} />
+        <Route path="/Schedule" element={<Schedule />} />
+        <Route path="/Payments" element={<Payments />} />
+        <Route path="/Applications" element={<Application />} />
+        <Route path="/Instructors" element={<InstructorFleet />} />
+        <Route path="/Fleet" element={<FleetManagement />} />
+        <Route path="/Finances" element={<Finances />} />
+        <Route path="/Settings" element={<Settings />} />
       </Route>
 
       {/* INSTRUCTOR ROUTES */}
       <Route path="/instructor" element={<InstructorLayout />}>
         <Route index element={<InstructorDashboard />} /> {/* /instructor */}
-        <Route path="/instructor/students" element={<MyStudents />} />
-        <Route path="/instructor/notifications" element={<NotificationPage />} />
-        <Route path="/instructor/schedule" element={<InstructorSchedule />} />
-        <Route path="/instructor/expenses" element={<InstructorExpenses />} />
+        <Route path="/instructor/Students" element={<MyStudents />} />
+        <Route path="/instructor/Notifications" element={<NotificationPage />} />
+        <Route path="/instructor/Schedule" element={<InstructorSchedule />} />
+        <Route path="/instructor/Expenses" element={<InstructorExpenses />} />
       </Route>
 
       {/* LOGIN ROUTE (Outer - no sidebar) */}
