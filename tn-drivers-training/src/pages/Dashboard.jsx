@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 // // import React, { useEffect, useState } from "react";
 // // import { Link } from "react-router-dom";
@@ -297,6 +298,8 @@
 
 
 
+=======
+>>>>>>> 161ce3d432b72b099b0b2445f6e5ce85b388d975
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -561,11 +564,15 @@ const Dashboard = () => {
                             <Cell key={`cell-${index}`} fill={PACKAGE_COLORS[index % PACKAGE_COLORS.length]} />
                           ))}
                         </Pie>
+<<<<<<< HEAD
                         <Tooltip 
                           cursor={{ fill: 'transparent' }}
                           formatter={(value) => [value, 'Students']}
                           contentStyle={tooltipStyle}
                         />
+=======
+                        <Tooltip formatter={(value) => [value, 'Students']} contentStyle={tooltipStyle} />
+>>>>>>> 161ce3d432b72b099b0b2445f6e5ce85b388d975
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -646,7 +653,11 @@ const Dashboard = () => {
                   </p>
                 </div>
                 <Link
+<<<<<<< HEAD
                   to="/applications"
+=======
+                  to="/admin/applications"
+>>>>>>> 161ce3d432b72b099b0b2445f6e5ce85b388d975
                   className="px-3 sm:px-4 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-[0.6rem] sm:text-[0.65rem] font-medium uppercase tracking-wider hover:bg-teal-500 hover:text-white transition-all"
                 >
                   View All

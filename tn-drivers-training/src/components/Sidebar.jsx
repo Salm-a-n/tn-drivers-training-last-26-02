@@ -269,12 +269,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         {/* HEADER with house icon and brand */}
         <div className="p-4 pb-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
+<<<<<<< HEAD
             <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-teal-50 dark:bg-teal-900/20">
               <img 
                 src="/logo.webp" 
                 alt="Terra Nova Logo" 
                 className="w-full h-full object-contain p-1"
               />
+=======
+            <div className="w-7 h-7 bg-teal-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="white">
+                <path d="M8 1L1 6v9h4v-5h6v5h4V6z"/>
+              </svg>
+>>>>>>> 161ce3d432b72b099b0b2445f6e5ce85b388d975
             </div>
             <div>
               <div className="font-['Sora',system-ui] text-[0.88rem] font-extrabold tracking-[-0.01em] leading-tight">
