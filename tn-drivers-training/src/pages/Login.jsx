@@ -45,7 +45,7 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify({ email, role: 'admin', name: 'Admin User' }));
         
         setTimeout(() => {
-          navigate('/admin');
+          navigate('/Dashboard');
         }, 1500);
       } 
       else if (email === 'instructor@gmail.com') {
