@@ -373,7 +373,7 @@ const Settings = () => {
           System <span className="text-teal-600 dark:text-teal-400">Rules</span>
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Manage priority regions, access controls, and automated messaging
+          Manage Locations, access controls, and automated messaging
         </p>
       </div>
 
@@ -381,7 +381,7 @@ const Settings = () => {
       <div className="flex-1 px-4 sm:px-6 pb-6 overflow-y-auto">
         
         {/* PRIORITY AREA CONFIGURATOR */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-5">
+        {/* <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-5">
           <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30">
             <div className="flex items-center gap-2">
               <MapPin size={16} className="text-orange-500 shrink-0" />
@@ -410,7 +410,7 @@ const Settings = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* TAX COMPLIANCE SECTION - Mobile Optimized */}
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-5">

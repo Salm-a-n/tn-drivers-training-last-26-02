@@ -267,27 +267,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         `}
       >
         {/* HEADER with house icon and brand */}
-        <div className="p-4 pb-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-teal-50 dark:bg-teal-900/20">
+        <div className=" border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+
+            <div className="w-54.5 h-15 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-white dark:bg-white shadow-md">
               <img 
                 src="/logo.webp" 
                 alt="Terra Nova Logo" 
-                className="w-full h-full object-contain p-1"
+                className="w-70 h-20 object-contain p-1"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://ui-avatars.com/api/?name=TN&background=008B8B&color=fff&size=40";
+                }}
               />
-
-           
             </div>
-            <div>
-              <div className="font-['Sora',system-ui] text-[0.88rem] font-extrabold tracking-[-0.01em] leading-tight">
-                <span className="text-slate-900 dark:text-white">TERRA </span>
-                <span className="text-teal-500">NOVA</span>
-              </div>
-              <div className="font-['DM_Sans',system-ui] text-[0.56rem] font-normal text-slate-400 dark:text-slate-500 tracking-[0.09em] uppercase mt-0.5">
-                Drivers Training
-              </div>
-            </div>
-          </div>
           {/* Close button for mobile */}
           <button
             onClick={() => setIsOpen(false)}
