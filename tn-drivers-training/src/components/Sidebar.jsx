@@ -256,7 +256,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* SIDEBAR - White background, clean design */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-40 w-[220px] bg-white dark:bg-slate-900
+          fixed inset-y-0 left-0 z-40 w-220px bg-white dark:bg-slate-900
           border-r border-slate-200 dark:border-slate-800
           flex flex-col
           overflow-y-auto
@@ -290,20 +290,20 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </div>
 
         {/* NAVIGATION with sections */}
-        <nav className="flex-1 overflow-y-auto py-2 px-2">
+        <nav className="flex-1 overflow-y-auto  px-2">
           {Object.entries(groupedItems).map(([section, items]) => (
             <div key={section}>
-              <div className="text-[0.55rem] font-mono font-semibold tracking-[0.13em] uppercase text-slate-400 dark:text-slate-500 px-3 pt-4 pb-1.5">
+              <div className="text-[0.90rem] font-soro font-semibold tracking-[0.20rem] uppercase text-slate-400 dark:text-slate-500 px-3 pt-4 pb-1.5">
                 {section}
               </div>
               {items.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.path}
-                  end={item.path === "/admin"}
+                  end={item.path === "/Dashboard"}
                   onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[0.78rem] transition-all duration-200
+                    `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[1.rem] transition-all duration-200
                     ${isActive 
                       ? "bg-teal-500 text-white shadow-sm font-semibold" 
                       : "text-slate-600 dark:text-slate-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-600 dark:hover:text-teal-400 hover:pl-4"
@@ -325,10 +325,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           {/* Appearance Toggle */}
           <div className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors group">
             <div className="flex items-center gap-2.5">
-              <span className="text-[0.82rem] text-slate-500 dark:text-slate-400">
+              <span className="text-[1rem] text-slate-500 dark:text-slate-400">
                 {darkMode ? "🌙" : "☀️"}
               </span>
-              <span className="text-[0.78rem] font-medium text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400">
+              <span className="text-[1rem] font-medium text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400">
                 Appearance
               </span>
             </div>
@@ -351,7 +351,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             to="/Settings"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[0.78rem] transition-all duration-200
+              `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[1rem] transition-all duration-200
               ${isActive 
                 ? "bg-teal-500 text-white shadow-sm font-semibold" 
                 : "text-slate-600 dark:text-slate-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-600 dark:hover:text-teal-400 hover:pl-4"
@@ -371,7 +371,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                        hover:bg-red-100 dark:hover:bg-red-900/40
                        transition-all duration-200 font-medium text-[0.78rem]"
           >
-            <span className="text-[0.82rem] w-4 text-center">↪</span>
+            <span className="text-[1rem] w-4 text-center">↪</span>
             <span>Terminate Session</span>
           </button>
         </div>

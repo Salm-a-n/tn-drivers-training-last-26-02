@@ -656,7 +656,7 @@ const LandingPage = () => {
       
       {/* ==================== NAVBAR ==================== */}
       <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 sm:h-20 gap-1">
             
             {/* Logo - Compressed for < 350px */}
@@ -664,7 +664,7 @@ const LandingPage = () => {
               {/* <div className="flex-shrink-0 w-8 h-8 sm:w-12 sm:h-12 bg-teal-500 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg">
                 <Car size={18} className="sm:w-7 sm:h-7" />
               </div> */}
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-teal-50 dark:bg-teal-900/20">
+              <div className="w-30 sm:w-70 h-18 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-white  dark:bg-teal-900/20">
               <img 
                 src="/logo.webp" 
                 alt="Terra Nova Logo" 
@@ -673,14 +673,14 @@ const LandingPage = () => {
 
            
             </div>
-              <div className="truncate">
+              {/* <div className="truncate">
                 <h1 className="text-[13px] sm:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">
                   Terra<span className="text-teal-500">Driving</span>
                 </h1>
                 <p className="hidden xs:block text-[7px] sm:text-[10px] font-bold text-teal-500 uppercase tracking-wider">
                   School of Excellence
                 </p>
-              </div>
+              </div> */}
             </div>
 
             {/* Desktop Navigation Links */}
@@ -744,7 +744,7 @@ const LandingPage = () => {
 
       {/* ==================== HERO SECTION ==================== */}
       <section className="relative bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 md:py-28">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 md:py-28">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             
             <div className="relative z-10 text-center md:text-left">
@@ -793,7 +793,7 @@ const LandingPage = () => {
       </section>
       {/* ==================== ABOUT SECTION ==================== */}
       <section id="about" className="py-12 sm:py-20 bg-white dark:bg-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-16">
             <span className="text-teal-500 font-black text-[10px] sm:text-sm uppercase tracking-wider">Why Choose Us</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mt-2">
@@ -840,7 +840,7 @@ const LandingPage = () => {
 
       {/* ==================== STEP BY STEP PROCESS ==================== */}
       <section id="process" className="py-12 sm:py-20 bg-slate-50 dark:bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Section Header */}
           <div className="text-center mb-8 sm:mb-16">
@@ -894,7 +894,7 @@ const LandingPage = () => {
 
       {/* ==================== PACKAGES SECTION ==================== */}
       <section id="packages" className="py-12 sm:py-20 bg-white dark:bg-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-8 sm:mb-16">
             <span className="text-teal-500 font-black text-[10px] sm:text-sm uppercase tracking-wider">Our Packages</span>
@@ -1005,7 +1005,7 @@ const LandingPage = () => {
 
       {/* ==================== TESTIMONIALS ==================== */}
       <section id="testimonials" className="py-12 sm:py-20 bg-slate-50 dark:bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-8 sm:mb-16">
             <span className="text-teal-500 font-black text-[10px] sm:text-sm uppercase tracking-wider">Testimonials</span>
@@ -1045,7 +1045,7 @@ const LandingPage = () => {
 
       {/* ==================== CONTACT SECTION ==================== */}
       <section id="contact" className="py-12 sm:py-20 bg-white dark:bg-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-r from-teal-500 to-indigo-600 rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-12 relative overflow-hidden">
             
             {/* Background Pattern - Mobile optimized */}
@@ -1098,7 +1098,7 @@ const LandingPage = () => {
 
       {/* ==================== FOOTER ==================== */}
       <footer className="bg-slate-900 text-white py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             
             {/* Logo */}

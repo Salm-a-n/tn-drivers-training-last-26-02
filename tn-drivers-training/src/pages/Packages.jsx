@@ -143,13 +143,11 @@
 
 
 
-
 import React, { useState, useMemo, useCallback } from "react";
 import NewPackage from "../components/NewPackage";
 import EditPackage from "../components/EditPackage";
 import Pagination from "../components/Pagination";
-import SearchBar from "../components/SearchBar"; 
-import { Plus, Package as PackageIcon, Edit2, Trash2 } from "lucide-react";
+import { Plus, Package as PackageIcon, Edit2, Trash2, Search, ChevronRight } from "lucide-react";
 
 const Packages = () => {
   const [showNewModal, setShowNewModal] = useState(false);
@@ -172,17 +170,15 @@ const Packages = () => {
     { id: 3, name: "Advanced City", price: 600, licenseClass: "Class 5", hours: 8, sessions: 6 },
   ]);
 
-  const handleSearch = useCallback((term) => {
-    setSearchTerm(term);
-    setCurrentPage(1); 
+  const handleSearch = useCallback((e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
   }, []);
 
   // Function to add new package
   const handleAddPackage = useCallback((newPackage) => {
-    console.log("Adding new package:", newPackage);
     setPackages(prevPackages => {
       const updatedPackages = [newPackage, ...prevPackages];
-      console.log("Updated packages:", updatedPackages);
       return updatedPackages;
     });
   }, []);
@@ -209,144 +205,176 @@ const Packages = () => {
   }, [searchTerm, packages]);
 
   const currentItems = useMemo(() => {
-    const lastIdx = currentPage * itemsPerPage;
-    return filteredPackages.slice(lastIdx - itemsPerPage, lastIdx);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredPackages.slice(startIndex, startIndex + itemsPerPage);
   }, [currentPage, filteredPackages]);
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>
-      <div className="max-w-7xl mx-auto w-full px-4 md:px-8 py-6 md:py-8">
-        
-        {/* HEADER */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
-              Driving <span className="text-teal-600 dark:text-teal-400">Packages</span>
-            </h1>
-            <p className="text-[0.65rem] font-soro text-slate-500 mt-0.5">Manage pricing and regional tax calculations</p>
+    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors overflow-hidden">
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="max-w-[1800px] mx-auto">
+          
+          {/* HEADER */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-800 dark:text-white">
+                Driving <span className="text-teal-600 dark:text-teal-400">Packages</span>
+              </h1>
+              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+                Manage pricing, packages, and regional tax calculations
+              </p>
+            </div>
+            <div className="flex justify-end w-full md:w-auto">
+              <button 
+                onClick={() => setShowNewModal(true)} 
+                className="w-full md:w-auto px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-900 dark:text-white hover:bg-teal-600 hover:text-white dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+              >
+                <Plus size={18} /> Add New Package
+              </button>
+            </div>
           </div>
-          <button 
-            onClick={() => setShowNewModal(true)} 
-            className="flex items-center gap-1.5 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-[0.7rem] font-semibold transition-all active:scale-95 shadow-sm"
-          >
-            <Plus size={14} /> Add New Package
-          </button>
-        </div>
 
-        <div className="space-y-6">
           {/* SEARCH BAR */}
-          <div className="max-w-xs">
-            <SearchBar onSearch={handleSearch} />
+          <div className="mb-6">
+            <div className="relative w-full lg:max-w-md">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search packages by name or license class..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm dark:text-slate-300 outline-none focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
+              />
+            </div>
           </div>
 
           {/* PACKAGE GRID */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentItems.map(pkg => (
-              <div key={pkg.id} className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-                
-                {/* ADMIN TOOLS */}
-                <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all z-20">
-                  <button 
-                    onClick={() => setEditingPackage(pkg)} 
-                    className="p-1.5 bg-white dark:bg-slate-800 text-teal-600 rounded-lg hover:bg-teal-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700"
-                    title="Edit Package"
+          {filteredPackages.length === 0 ? (
+            <div className="text-center py-24 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
+              <PackageIcon size={56} className="mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-lg">No packages found matching your search.</p>
+              {searchTerm && (
+                <button 
+                  onClick={() => setSearchTerm("")} 
+                  className="mt-4 text-teal-600 font-bold hover:underline"
+                >
+                  Clear search
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {currentItems.map(pkg => (
+                  <div 
+                    key={pkg.id} 
+                    className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
                   >
-                    <Edit2 size={12} />
-                  </button>
-                  <button 
-                    onClick={() => handleDeletePackage(pkg.id)} 
-                    className="p-1.5 bg-white dark:bg-slate-800 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700"
-                    title="Delete Package"
-                  >
-                    <Trash2 size={12} />
-                  </button>
-                </div>
+                    {/* ADMIN TOOLS - Larger and more prominent on hover */}
+                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+                      <button 
+                        onClick={() => setEditingPackage(pkg)} 
+                        className="p-2 bg-white dark:bg-slate-800 text-teal-600 rounded-xl hover:bg-teal-600 hover:text-white transition-all shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:scale-110 active:scale-95"
+                        title="Edit Package"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button 
+                        onClick={() => handleDeletePackage(pkg.id)} 
+                        className="p-2 bg-white dark:bg-slate-800 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:scale-110 active:scale-95"
+                        title="Delete Package"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
 
-                <div className="p-5">
-                  {/* License Class Badge */}
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[0.6rem] font-soro font-semibold px-2 py-0.5 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-full uppercase tracking-wider">
-                      {pkg.licenseClass}
-                    </span>
-                    <PackageIcon size={14} className="text-slate-400" />
-                  </div>
-                  
-                  {/* Package Name */}
-                  <h3 className="text-base font-semibold text-slate-800 dark:text-white mb-1">
-                    {pkg.name}
-                  </h3>
-                  
-                  {/* Hours */}
-                  <p className="text-[0.65rem] font-soro text-slate-500 mb-4">
-                    {pkg.hours} Hours Instruction
-                  </p>
+                    <div className="p-6">
+                      {/* License Class Badge */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-[11px] font-bold px-2.5 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-lg uppercase tracking-wider">
+                          {pkg.licenseClass}
+                        </span>
+                        <PackageIcon size={16} className="text-slate-400 group-hover:text-teal-500 transition-colors duration-300" />
+                      </div>
+                      
+                      {/* Package Name */}
+                      <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-300">
+                        {pkg.name}
+                      </h3>
+                      
+                      {/* Hours and Sessions */}
+                      <div className="flex items-center gap-3 mb-5">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          {pkg.hours} Hours
+                        </span>
+                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          {pkg.sessions} Sessions
+                        </span>
+                      </div>
 
-                  {/* Regional Pricing */}
-                  <div className="mb-4">
-                    <label className="text-[0.55rem] font-soro font-semibold text-slate-400 uppercase tracking-wider block mb-2">
-                      Regional Pricing (Inc. Tax)
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {taxRegions.map(region => {
-                        const total = pkg.price * (1 + region.rate);
-                        return (
-                          <div key={region.id} className="p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
-                            <p className="text-[0.55rem] font-soro font-semibold text-slate-500 uppercase">{region.city}</p>
-                            <p className="text-[0.75rem] font-semibold text-slate-800 dark:text-white">
-                              ${total.toFixed(2)}
-                            </p>
-                          </div>
-                        );
-                      })}
+                      {/* Regional Pricing */}
+                      <div className="mb-5">
+                        <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                          Regional Pricing (Inc. Tax)
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {taxRegions.map(region => {
+                            const total = pkg.price * (1 + region.rate);
+                            return (
+                              <div key={region.id} className="p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 group-hover:border-teal-200 dark:group-hover:border-teal-800 transition-all duration-300">
+                                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{region.city}</p>
+                                <p className="text-sm font-bold text-slate-800 dark:text-white">
+                                  ${total.toFixed(2)}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Base Price */}
+                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Base Price</span>
+                        <span className="text-xl font-bold text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors duration-300">
+                          ${pkg.price.toFixed(2)}
+                        </span>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Base Price */}
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                    <span className="text-[0.6rem] font-soro text-slate-400 uppercase tracking-wider">Base Price</span>
-                    <span className="text-base font-semibold text-teal-600 dark:text-teal-400">${pkg.price.toFixed(2)}</span>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-          
-          {/* Pagination */}
-          {filteredPackages.length > itemsPerPage && (
-            <div className="flex justify-center pt-4">
-              <Pagination 
-                totalItems={filteredPackages.length} 
-                itemsPerPage={itemsPerPage} 
-                currentPage={currentPage} 
-                onPageChange={setCurrentPage} 
-              />
-            </div>
-          )}
-
-          {/* Empty State */}
-          {filteredPackages.length === 0 && (
-            <div className="text-center py-12">
-              <PackageIcon size={32} className="mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-[0.7rem] font-soro text-slate-400">No packages found matching your search.</p>
-            </div>
+              
+              {/* Pagination */}
+              {filteredPackages.length > itemsPerPage && (
+                <div className="flex justify-center pt-8 pb-4">
+                  <Pagination 
+                    totalItems={filteredPackages.length} 
+                    itemsPerPage={itemsPerPage} 
+                    currentPage={currentPage} 
+                    onPageChange={setCurrentPage} 
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
-
-        {/* MODALS */}
-        {showNewModal && (
-          <NewPackage 
-            onClose={() => setShowNewModal(false)} 
-            onAdd={handleAddPackage}
-          />
-        )}
-        {editingPackage && (
-          <EditPackage 
-            pkg={editingPackage} 
-            onClose={() => setEditingPackage(null)} 
-            onUpdate={handleUpdatePackage}
-          />
-        )}
       </div>
+
+      {/* MODALS */}
+      {showNewModal && (
+        <NewPackage 
+          onClose={() => setShowNewModal(false)} 
+          onAdd={handleAddPackage}
+        />
+      )}
+      {editingPackage && (
+        <EditPackage 
+          pkg={editingPackage} 
+          onClose={() => setEditingPackage(null)} 
+          onUpdate={handleUpdatePackage}
+        />
+      )}
     </div>
   );
 };

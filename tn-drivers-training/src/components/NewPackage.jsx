@@ -120,7 +120,7 @@ const NewPackage = ({ onClose, onAdd }) => {
       sessions: Math.ceil(parseInt(hours) / 1.5),
     };
 
-    console.log("Creating new package:", newPackage); // Debug log
+    console.log("Creating new package:", newPackage);
     
     // Call the onAdd callback with the new package
     onAdd(newPackage);
@@ -133,151 +133,158 @@ const NewPackage = ({ onClose, onAdd }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>
-      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-slate-950 w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
         
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-lg font-semibold tracking-tight text-slate-800 dark:text-white">
-                Create New Package
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Configure pricing and curriculum details
-              </p>
-            </div>
-            <button 
-              onClick={onClose} 
-              className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 transition-colors"
-            >
-              <X size={18} />
-            </button>
+        <div className="flex items-center justify-between px-8 py-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
+          <div>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+              Create New <span className="text-teal-600 dark:text-teal-400">Package</span>
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Configure pricing and curriculum details
+            </p>
           </div>
+          <button 
+            onClick={onClose} 
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 transition-colors"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          
-          {/* Package Name Field */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-              <Package size={14} className="text-teal-500" />
-              Package Name *
-            </label>
-            <input 
-              type="text" 
-              required 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none text-sm font-medium text-slate-900 dark:text-slate-200 transition-all placeholder:text-slate-400" 
-              placeholder="e.g., Full GDL Program" 
-            />
-          </div>
-
-          {/* Hours and Price Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-                <Clock size={14} className="text-teal-500" />
-                Total Hours *
+        {/* Form Content */}
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Package Name Field */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <Package size={14} className="text-teal-500" />
+                Package Name *
               </label>
               <input 
-                type="number" 
+                type="text" 
                 required 
-                min="1"
-                step="1"
-                value={hours} 
-                onChange={(e) => setHours(e.target.value)} 
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none text-sm font-medium text-slate-900 dark:text-slate-200 transition-all" 
-                placeholder="12" 
+                value={name} 
+                onChange={(e) => setName(e.target.value)} 
+                className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm font-medium text-slate-900 dark:text-white transition-all placeholder:text-slate-400" 
+                placeholder="e.g., Full GDL Program" 
               />
             </div>
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-                <DollarSign size={14} className="text-teal-500" />
-                Base Price *
-              </label>
-              <input 
-                type="number" 
-                required 
-                min="0"
-                step="0.01"
-                value={price} 
-                onChange={(e) => setPrice(e.target.value)} 
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none text-sm font-medium text-slate-900 dark:text-slate-200 transition-all" 
-                placeholder="450" 
-              />
-            </div>
-          </div>
 
-          {/* License Class Field */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-              <GraduationCap size={14} className="text-teal-500" />
-              License Class *
-            </label>
-            <select 
-              value={licenseClass} 
-              onChange={(e) => setLicenseClass(e.target.value)} 
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none text-sm font-medium text-slate-900 dark:text-slate-200 transition-all cursor-pointer"
-            >
-              <option>Class 7 L</option>
-              <option>Class 7 N</option>
-              <option>Class 5</option>
-              <option>Class 1</option>
-              <option>Class 2</option>
-              <option>Class 3</option>
-            </select>
-          </div>
-
-          {/* Preview Section */}
-          {name && price && hours && (
-            <div className="mt-4 p-4 rounded-xl bg-teal-50 dark:bg-teal-900/10 border border-teal-100 dark:border-teal-800">
-              <div className="flex items-center gap-2 mb-2">
-                <Zap size={12} className="text-teal-500" />
-                <span className="text-[10px] font-soro font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">Package Preview</span>
+            {/* Hours and Price Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                  <Clock size={14} className="text-teal-500" />
+                  Total Hours *
+                </label>
+                <input 
+                  type="number" 
+                  required 
+                  min="1"
+                  step="1"
+                  value={hours} 
+                  onChange={(e) => setHours(e.target.value)} 
+                  className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm font-medium text-slate-900 dark:text-white transition-all" 
+                  placeholder="12" 
+                />
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-800 dark:text-white">{name || '—'}</p>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">{licenseClass} • {hours || '0'} hours</p>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                  <DollarSign size={14} className="text-teal-500" />
+                  Base Price *
+                </label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0"
+                  step="0.01"
+                  value={price} 
+                  onChange={(e) => setPrice(e.target.value)} 
+                  className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm font-medium text-slate-900 dark:text-white transition-all" 
+                  placeholder="450" 
+                />
+              </div>
+            </div>
+
+            {/* License Class Field */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <GraduationCap size={14} className="text-teal-500" />
+                License Class *
+              </label>
+              <div className="relative">
+                <select 
+                  value={licenseClass} 
+                  onChange={(e) => setLicenseClass(e.target.value)} 
+                  className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm font-medium text-slate-900 dark:text-white transition-all cursor-pointer appearance-none"
+                >
+                  <option>Class 7 L</option>
+                  <option>Class 7 N</option>
+                  <option>Class 5</option>
+                  <option>Class 1</option>
+                  <option>Class 2</option>
+                  <option>Class 3</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
                 </div>
-                <p className="text-lg font-bold text-teal-600 dark:text-teal-400">
-                  ${price ? parseFloat(price).toFixed(2) : '0.00'}
-                </p>
               </div>
             </div>
-          )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-2">
-            <button 
-              type="button" 
-              onClick={onClose} 
-              className="flex-1 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              disabled={isSubmitting || !name || !price || !hours}
-              className="flex-1 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-medium transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <Plus size={16} />
-                  Create Package
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+            {/* Preview Section */}
+            {name && price && hours && (
+              <div className="mt-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap size={14} className="text-teal-500" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">Package Preview</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-base font-bold text-slate-800 dark:text-white">{name || '—'}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{licenseClass} • {hours || '0'} hours</p>
+                  </div>
+                  <p className="text-2xl font-bold text-teal-600 dark:text-teal-400">
+                    ${price ? parseFloat(price).toFixed(2) : '0.00'}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <button 
+                type="button" 
+                onClick={onClose} 
+                className="flex-1 px-6 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                disabled={isSubmitting || !name || !price || !hours}
+                className="flex-1 px-6 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 disabled:bg-teal-400 disabled:cursor-not-allowed text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Plus size={16} />
+                    Create Package
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

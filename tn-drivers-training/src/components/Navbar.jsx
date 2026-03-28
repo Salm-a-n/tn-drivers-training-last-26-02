@@ -185,10 +185,10 @@ const Navbar = ({ isOpen, setIsOpen }) => {
               <Home className="w-4 h-4 md:w-4.5 md:h-4.5 text-teal-600 dark:text-teal-400" strokeWidth={1.8} />
             </div>
             <div>
-              <h1 className="text-[0.95rem] sm:text-[1rem] md:text-[1.1rem] font-semibold tracking-tight text-slate-800 dark:text-slate-100 leading-tight">
+              <h1 className="text-[0.95rem] sm:text-[1.3rem] md:text-[1.5rem] font-semibold tracking-tight text-slate-800 dark:text-slate-100 leading-tight">
                 {pageTitle}
               </h1>
-              <div className="hidden sm:flex items-center gap-1.5 text-[0.6rem] md:text-[0.65rem] text-slate-500 dark:text-slate-400 font-mono tracking-wide">
+              <div className="hidden sm:flex items-center gap-1.5 text-[0.75rem] md:text-[1rem] lg:text-[1.1rem] text-slate-500 dark:text-slate-400 font-mono tracking-wide">
                 <span>{dateStr}</span>
                 <span className="text-slate-400">•</span>
                 <span>{timeStr}</span>

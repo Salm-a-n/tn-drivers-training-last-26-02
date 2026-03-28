@@ -300,7 +300,7 @@
 import React, { useState } from 'react';
 import { 
   MapPin, ShieldCheck, Mail, X, 
-  Smartphone, CheckCircle, Slash, Plus, Edit3, Trash2
+  Smartphone, CheckCircle, Slash, Plus, Edit3, Trash2, Settings as SettingsIcon
 } from 'lucide-react';
 
 const Settings = () => {
@@ -365,268 +365,281 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors overflow-x-hidden" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>
+    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors overflow-hidden">
       
       {/* HEADER */}
-      <div className="px-4 sm:px-6 pt-5 pb-3">
-        <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
-          System <span className="text-teal-600 dark:text-teal-400">Rules</span>
-        </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Manage Locations, access controls, and automated messaging
-        </p>
+      <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-800 dark:text-white">
+              System <span className="text-teal-600 dark:text-teal-400">Rules</span>
+            </h1>
+            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+              Manage locations, tax compliance, and system permissions
+            </p>
+          </div>
+          {/* <div className="flex justify-end w-full md:w-auto">
+            <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+              <SettingsIcon size={20} className="text-teal-600 dark:text-teal-400" />
+            </div>
+          </div> */}
+        </div>
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 px-4 sm:px-6 pb-6 overflow-y-auto">
-        
-        {/* PRIORITY AREA CONFIGURATOR */}
-        {/* <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-5">
-          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30">
-            <div className="flex items-center gap-2">
-              <MapPin size={16} className="text-orange-500 shrink-0" />
-              <h3 className="text-sm font-semibold text-slate-800 dark:text-white">Priority Areas</h3>
+      <main className="flex-1 px-4 sm:px-6 lg:px-8 pb-8 overflow-x-hidden">
+        <div className="max-w-[1800px] mx-auto space-y-6">
+          
+          {/* TAX COMPLIANCE SECTION */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold text-lg">
+                  $
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">Tax Compliance</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">GST/HST Regional Rates</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => openTaxModal()}
+                className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 shadow-sm"
+              >
+                <Plus size={14} /> Add Region
+              </button>
             </div>
-          </div>
-          <div className="p-4">
-            <div className="flex flex-wrap gap-2 p-3 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
-              {postalCodes.map((code) => (
-                <div key={code} className="flex items-center gap-1 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 px-2 py-1 rounded-md text-xs font-medium border border-teal-200 dark:border-teal-800 whitespace-nowrap">
-                  {code}
-                  <button 
-                    onClick={() => removeCode(code)} 
-                    className="hover:text-red-500 transition-colors"
-                  >
-                    <X size={12} />
-                  </button>
+            
+            {/* Mobile Card View */}
+            <div className="block md:hidden p-5 space-y-3">
+              {taxRegions.map((region) => (
+                <div key={region.id} className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <p className="text-base font-bold text-slate-800 dark:text-white">{region.city}</p>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">{region.province}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <button 
+                        onClick={() => openTaxModal(region)} 
+                        className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors"
+                      >
+                        <Edit3 size={14} />
+                      </button>
+                      <button 
+                        onClick={() => setTaxRegions(taxRegions.filter(r => r.id !== region.id))} 
+                        className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div>
+                      <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Tax Type</p>
+                      <p className="text-sm font-semibold text-teal-600 dark:text-teal-400">{region.taxName}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Rate</p>
+                      <p className="text-base font-bold text-slate-800 dark:text-white">{(region.rate * 100).toFixed(1)}%</p>
+                    </div>
+                  </div>
                 </div>
               ))}
-              <input 
-                className="bg-transparent border-none focus:outline-none text-xs flex-1 min-w-[100px] dark:text-slate-200 placeholder:text-slate-400" 
-                placeholder="Add postal code..." 
-                value={newCode}
-                onChange={(e) => setNewCode(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addPostalCode()}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Region/City</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Tax Type</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Rate (%)</th>
+                    <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Actions</th>
+                   </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {taxRegions.map((region) => (
+                    <tr key={region.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-bold text-slate-800 dark:text-white">{region.city}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">{region.province}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
+                          {region.taxName}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-base font-bold text-teal-600 dark:text-teal-400">{(region.rate * 100).toFixed(1)}%</span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button 
+                            onClick={() => openTaxModal(region)} 
+                            className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors"
+                            title="Edit Region"
+                          >
+                            <Edit3 size={16} />
+                          </button>
+                          <button 
+                            onClick={() => setTaxRegions(taxRegions.filter(r => r.id !== region.id))} 
+                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            title="Delete Region"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* PERMISSIONS MATRIX */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">Permissions Matrix</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Role-based access control</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Mobile Card View */}
+            <div className="block md:hidden p-5 space-y-3">
+              <PermissionCard 
+                title="Full View / Edit" 
+                admin={true} 
+                instructor={false} 
+                student={false} 
+              />
+              <PermissionCard 
+                title="Manage Assigned Students" 
+                admin={true} 
+                instructor={true} 
+                student={false} 
+              />
+              <PermissionCard 
+                title="Book Lessons & Progress" 
+                admin={true} 
+                instructor={true} 
+                student={true} 
               />
             </div>
-          </div>
-        </div> */}
 
-        {/* TAX COMPLIANCE SECTION - Mobile Optimized */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-5">
-          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-teal-50 dark:bg-teal-900/20 text-teal-500 flex items-center justify-center font-bold text-sm shrink-0">$</div>
-              <div>
-                <h3 className="text-sm font-semibold text-slate-800 dark:text-white">Tax Compliance</h3>
-                <p className="text-[11px] text-slate-400">GST/HST Regional Rates</p>
-              </div>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">System Capability</th>
+                    <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Admin</th>
+                    <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Instructor</th>
+                    <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Student</th>
+                   </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <PermissionRow label="Full View / Edit" admin instructor={false} student={false} />
+                  <PermissionRow label="Manage Assigned Students" admin instructor student={false} />
+                  <PermissionRow label="Book Lessons & Progress" admin instructor student />
+                </tbody>
+              </table>
             </div>
-            <button 
-              onClick={() => openTaxModal()}
-              className="p-1.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-all shrink-0"
-            >
-              <Plus size={14} />
-            </button>
-          </div>
-          
-          {/* Mobile Card View */}
-          <div className="block md:hidden p-4 space-y-3">
-            {taxRegions.map((region) => (
-              <div key={region.id} className="bg-slate-50 dark:bg-slate-800/30 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-semibold text-slate-800 dark:text-white">{region.city}</p>
-                    <p className="text-xs text-slate-500">{region.province}</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <button 
-                      onClick={() => openTaxModal(region)} 
-                      className="p-1.5 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 rounded-lg transition-all"
-                    >
-                      <Edit3 size={14} />
-                    </button>
-                    <button 
-                      onClick={() => setTaxRegions(taxRegions.filter(r => r.id !== region.id))} 
-                      className="p-1.5 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-all"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-700">
-                  <span className="text-xs text-slate-500">Tax Type:</span>
-                  <span className="text-sm font-mono font-semibold text-teal-600">{region.taxName}</span>
-                </div>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-slate-500">Rate:</span>
-                  <span className="text-sm font-semibold text-slate-800 dark:text-white">{(region.rate * 100).toFixed(1)}%</span>
-                </div>
-              </div>
-            ))}
           </div>
 
-          {/* Desktop Table View */}
-          <div className="hidden md:block p-4 overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-xs text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
-                  <th className="pb-2 text-left">Region/City</th>
-                  <th className="pb-2 text-left">Type</th>
-                  <th className="pb-2 text-left">Rate (%)</th>
-                  <th className="pb-2 text-right">Actions</th>
-                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {taxRegions.map((region) => (
-                  <tr key={region.id} className="text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="py-3 font-medium">{region.city} ({region.province})</td>
-                    <td className="py-3">
-                      <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-xs font-mono">{region.taxName}</span>
-                    </td>
-                    <td className="py-3">{(region.rate * 100).toFixed(1)}%</td>
-                    <td className="py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          onClick={() => openTaxModal(region)} 
-                          className="p-1.5 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 rounded-lg transition-all"
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button 
-                          onClick={() => setTaxRegions(taxRegions.filter(r => r.id !== region.id))} 
-                          className="p-1.5 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-all"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* TEMPLATES GRID */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TemplateCard 
+              icon={<Mail size={18} />} 
+              title="Welcome Email" 
+              type="Email Template" 
+              defaultVal="Hi {student_name}, welcome to Terra Nova! Your first lesson is scheduled for {date} at {time}. We're excited to have you!" 
+            />
+            <TemplateCard 
+              icon={<Smartphone size={18} />} 
+              title="Lesson Reminder" 
+              type="SMS Notification" 
+              defaultVal="Reminder: Hi {student_name}, your driving lesson with {instructor_name} is tomorrow at {time}. See you at {location}!" 
+            />
           </div>
         </div>
-
-        {/* PERMISSIONS MATRIX */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-5">
-          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30">
-            <div className="flex items-center gap-2">
-              <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
-              <h3 className="text-sm font-semibold text-slate-800 dark:text-white">Permissions Matrix</h3>
-            </div>
-          </div>
-          
-          {/* Mobile Card View */}
-          <div className="block md:hidden p-4 space-y-3">
-            <div className="bg-slate-50 dark:bg-slate-800/30 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-              <p className="font-semibold text-slate-800 dark:text-white mb-2">Full View / Edit</p>
-              <div className="flex justify-around">
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Admin</p>
-                  <CheckCircle className="text-teal-500 mx-auto" size={18} />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Instructor</p>
-                  <Slash className="text-slate-300 dark:text-slate-600 mx-auto" size={16} />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Student</p>
-                  <Slash className="text-slate-300 dark:text-slate-600 mx-auto" size={16} />
-                </div>
-              </div>
-            </div>
-            <div className="bg-slate-50 dark:bg-slate-800/30 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-              <p className="font-semibold text-slate-800 dark:text-white mb-2">Manage Assigned Students</p>
-              <div className="flex justify-around">
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Admin</p>
-                  <CheckCircle className="text-teal-500 mx-auto" size={18} />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Instructor</p>
-                  <CheckCircle className="text-teal-500 mx-auto" size={18} />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Student</p>
-                  <Slash className="text-slate-300 dark:text-slate-600 mx-auto" size={16} />
-                </div>
-              </div>
-            </div>
-            <div className="bg-slate-50 dark:bg-slate-800/30 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-              <p className="font-semibold text-slate-800 dark:text-white mb-2">Book Lessons & Progress</p>
-              <div className="flex justify-around">
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Admin</p>
-                  <CheckCircle className="text-teal-500 mx-auto" size={18} />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Instructor</p>
-                  <CheckCircle className="text-teal-500 mx-auto" size={18} />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-500 mb-1">Student</p>
-                  <CheckCircle className="text-teal-500 mx-auto" size={18} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Table View */}
-          <div className="hidden md:block p-4 overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-xs text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
-                  <th className="pb-2 text-left">System Capability</th>
-                  <th className="pb-2 text-center">Admin</th>
-                  <th className="pb-2 text-center">Instructor</th>
-                  <th className="pb-2 text-center">Student</th>
-                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                <PermissionRow label="Full View / Edit" admin instructor={false} student={false} />
-                <PermissionRow label="Manage Assigned Students" admin instructor student={false} />
-                <PermissionRow label="Book Lessons & Progress" admin instructor student />
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* TEMPLATES GRID */}
-        <div className="grid grid-cols-1 gap-4">
-          <TemplateCard icon={<Mail size={16} />} title="Welcome" type="Email Template" defaultVal="Hi {student_name}, welcome to Terra Nova!" />
-          <TemplateCard icon={<Smartphone size={16} />} title="Reminder" type="SMS Notification" defaultVal="Reminder: Hi {student_name}, lesson tomorrow at {time}." />
-        </div>
-      </div>
+      </main>
 
       {/* TAX MODAL */}
       {showTaxModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-[calc(100%-2rem)] sm:max-w-md rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200 dark:border-slate-800">
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white">
-                {editingRegion ? 'Edit Region' : 'Add New Region'}
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Configure local tax rates</p>
-            </div>
-            <form onSubmit={handleSaveRegion} className="p-4 sm:p-5 space-y-3 sm:space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-950 w-full max-w-md max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">City Name</label>
-                <input required value={regionForm.city} onChange={(e) => setRegionForm({...regionForm, city: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm dark:text-slate-200" />
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+                  {editingRegion ? 'Edit' : 'Add'} <span className="text-teal-600 dark:text-teal-400">Tax Region</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">Configure local tax rates</p>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Tax Name</label>
-                  <input required value={regionForm.taxName} onChange={(e) => setRegionForm({...regionForm, taxName: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm dark:text-slate-200" />
+              <button 
+                onClick={closeTaxModal} 
+                className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <form onSubmit={handleSaveRegion} className="flex-1 overflow-y-auto p-6 space-y-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">City Name</label>
+                <input 
+                  required 
+                  value={regionForm.city} 
+                  onChange={(e) => setRegionForm({...regionForm, city: e.target.value})} 
+                  className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all" 
+                  placeholder="e.g., St. John's"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Tax Name</label>
+                  <input 
+                    required 
+                    value={regionForm.taxName} 
+                    onChange={(e) => setRegionForm({...regionForm, taxName: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all" 
+                    placeholder="e.g., HST"
+                  />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Rate (%)</label>
-                  <input type="number" step="0.1" required value={regionForm.rate} onChange={(e) => setRegionForm({...regionForm, rate: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm dark:text-slate-200" />
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Rate (%)</label>
+                  <input 
+                    type="number" 
+                    step="0.1" 
+                    required 
+                    value={regionForm.rate} 
+                    onChange={(e) => setRegionForm({...regionForm, rate: e.target.value})} 
+                    className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all" 
+                    placeholder="15"
+                  />
                 </div>
               </div>
-              <div className="flex gap-2 sm:gap-3 pt-2">
-                <button type="button" onClick={closeTaxModal} className="flex-1 px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">Cancel</button>
-                <button type="submit" className="flex-1 px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-all">Save Region</button>
+              <div className="flex gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={closeTaxModal} 
+                  className="flex-1 px-6 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 px-6 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm transition-all shadow-lg shadow-teal-500/20"
+                >
+                  Save Region
+                </button>
               </div>
             </form>
           </div>
@@ -639,37 +652,63 @@ const Settings = () => {
 // --- HELPER COMPONENTS ---
 
 const PermissionRow = ({ label, admin, instructor, student }) => (
-  <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-    <td className="py-3 text-sm text-slate-700 dark:text-slate-300">{label}</td>
-    <td className="py-3 text-center">{admin ? <CheckCircle className="inline text-teal-500" size={18} /> : <Slash className="inline text-slate-300 dark:text-slate-600" size={14} />}</td>
-    <td className="py-3 text-center">{instructor ? <CheckCircle className="inline text-teal-500" size={18} /> : <Slash className="inline text-slate-300 dark:text-slate-600" size={14} />}</td>
-    <td className="py-3 text-center">{student ? <CheckCircle className="inline text-teal-500" size={18} /> : <Slash className="inline text-slate-300 dark:text-slate-600" size={14} />}</td>
+  <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+    <td className="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">{label}</td>
+    <td className="px-6 py-4 text-center">
+      {admin ? <CheckCircle className="inline text-teal-500" size={18} /> : <Slash className="inline text-slate-300 dark:text-slate-600" size={14} />}
+    </td>
+    <td className="px-6 py-4 text-center">
+      {instructor ? <CheckCircle className="inline text-teal-500" size={18} /> : <Slash className="inline text-slate-300 dark:text-slate-600" size={14} />}
+    </td>
+    <td className="px-6 py-4 text-center">
+      {student ? <CheckCircle className="inline text-teal-500" size={18} /> : <Slash className="inline text-slate-300 dark:text-slate-600" size={14} />}
+    </td>
   </tr>
+);
+
+const PermissionCard = ({ title, admin, instructor, student }) => (
+  <div className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+    <p className="text-sm font-bold text-slate-800 dark:text-white mb-3">{title}</p>
+    <div className="flex justify-around">
+      <div className="text-center">
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Admin</p>
+        {admin ? <CheckCircle className="text-teal-500 mx-auto" size={18} /> : <Slash className="text-slate-300 dark:text-slate-600 mx-auto" size={14} />}
+      </div>
+      <div className="text-center">
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Instructor</p>
+        {instructor ? <CheckCircle className="text-teal-500 mx-auto" size={18} /> : <Slash className="text-slate-300 dark:text-slate-600 mx-auto" size={14} />}
+      </div>
+      <div className="text-center">
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Student</p>
+        {student ? <CheckCircle className="text-teal-500 mx-auto" size={18} /> : <Slash className="text-slate-300 dark:text-slate-600 mx-auto" size={14} />}
+      </div>
+    </div>
+  </div>
 );
 
 const TemplateCard = ({ icon, title, type, defaultVal }) => {
   const [templateValue, setTemplateValue] = useState(defaultVal);
   
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
-      <div className="px-4 py-3 flex items-center gap-3 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
-        <div className="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 text-teal-500 shrink-0">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+      <div className="px-6 py-4 flex items-center gap-3 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
+        <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 text-teal-500">
           {icon}
         </div>
         <div>
-          <h3 className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{type}</h3>
-          <h4 className="text-sm font-semibold text-slate-800 dark:text-white">{title}</h4>
+          <p className="text-[10px] font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider">{type}</p>
+          <h4 className="text-sm font-bold text-slate-800 dark:text-white">{title}</h4>
         </div>
       </div>
-      <div className="p-4 space-y-3">
+      <div className="p-5 space-y-4">
         <textarea 
-          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm p-3 dark:text-slate-200 outline-none focus:ring-1 focus:ring-teal-500 resize-none transition-all duration-200" 
-          rows="3" 
+          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm p-4 dark:text-slate-200 outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 resize-none transition-all" 
+          rows="4" 
           value={templateValue}
           onChange={(e) => setTemplateValue(e.target.value)}
         />
         <div className="flex justify-end">
-          <button className="px-4 py-1.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-xs font-medium transition-all duration-200">
+          <button className="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-all shadow-sm">
             Update Template
           </button>
         </div>

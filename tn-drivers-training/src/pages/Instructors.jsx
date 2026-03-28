@@ -593,26 +593,23 @@
 
 
 
-
-
-
-
 import React, { useState } from 'react';
 import InstructorDetailModal from '../components/InstructorDetailModal';
 import InstructorRegistrationModal from '../components/InstructorRegistrationModal';
 import Pagination from '../components/Pagination';
 import { 
   Search, ScanEye, MapPin, Mail, Phone, Calendar, 
-  Trash2, UserPlus, Download, Plus, ChevronRight
+  Trash2, UserPlus, Download, Plus, ChevronRight, AlertCircle
 } from 'lucide-react';
 
 const Instructors = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All'); // Added status filter state
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [isRegModalOpen, setIsRegModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 3;
 
   const [instructors, setInstructors] = useState([
     { 
@@ -718,12 +715,14 @@ const Instructors = () => {
     }
   };
 
+  // Updated filter logic with status filter
   const filteredInstructors = instructors.filter(ins => {
     const matchesLocation = locationFilter === 'All' || ins.location === locationFilter;
+    const matchesStatus = statusFilter === 'All' || ins.status === statusFilter;
     const matchesSearch = ins.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           ins.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           ins.email.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesLocation && matchesSearch;
+    return matchesLocation && matchesStatus && matchesSearch;
   });
 
   // Pagination logic
@@ -740,28 +739,39 @@ const Instructors = () => {
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors overflow-hidden">
       
       {/* 1. ADAPTIVE HEADER */}
-      <header className="px-4 md:px-8 pt-6 md:pt-8 pb-4">
+      <header className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-slate-800 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-800 dark:text-white">
               Instructor <span className="text-teal-600 dark:text-teal-400">Management</span>
             </h1>
-            <p className="text-[0.65rem] font-sora text-slate-500 dark:text-slate-400 mt-0.5 tracking-wider">
+            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
               Manage instructor profiles, performance metrics, and student assignments
             </p>
+          </div>
+          
+          {/* New Instructor Button */}
+          <div className="flex justify-end w-full md:w-auto">
+            <button 
+              onClick={() => setIsRegModalOpen(true)} 
+              className="w-full md:w-auto px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.8rem] font-medium text-slate-900 dark:text-white hover:bg-teal-600 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+            >
+              <Plus size={18} /> New Instructor
+            </button>
           </div>
         </div>
 
         {/* Filter Bar */}
-        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-3 mb-6">
-          <div className="grid grid-cols-2 md:flex gap-2 flex-1">
+        <div className="flex flex-col w-full lg:flex-row items-stretch lg:items-center gap-3 sm:gap-4 mb-6">
+          {/* Filter Group - First row on mobile, inline on larger screens */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-2 sm:gap-3 flex-1">
             
-            {/* Location Filter */}
-            <div className="group relative">
+            {/* Location Filter - Full width on mobile */}
+            <div className="group relative w-full">
               <select 
                 value={locationFilter} 
                 onChange={(e) => { setLocationFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[0.7rem] font-sora dark:text-slate-300 outline-none focus:ring-1 focus:ring-teal-500 group-hover:border-teal-400 cursor-pointer transition-all"
+                className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium dark:text-slate-300 outline-none focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
               >
                 <option value="All">All Locations</option>
                 {locations.map(loc => (
@@ -770,177 +780,200 @@ const Instructors = () => {
               </select>
             </div>
 
-            <div className="group relative hidden md:block">
+            {/* Status Filter - Full width on mobile */}
+            <div className="group relative w-full">
               <select 
-                className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[0.7rem] font-sora dark:text-slate-300 outline-none focus:ring-1 focus:ring-teal-500 group-hover:border-teal-400 cursor-pointer transition-all"
+                value={statusFilter}
+                onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
+                className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium dark:text-slate-300 outline-none focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
               >
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Blocked</option>
+                <option value="All">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Blocked">Blocked</option>
               </select>
             </div>
           </div>
 
-          <div className="relative w-full md:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5" />
+          {/* Search Bar - Full width on mobile, fixed width on larger screens */}
+          <div className="relative w-full lg:max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Search by Name, ID or Email..."
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[0.7rem] font-sora dark:text-slate-300 outline-none focus:ring-1 focus:ring-teal-500 placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm dark:text-slate-300 outline-none focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
             />
           </div>
-        </div>
-
-        {/* Action Buttons Row */}
-        <div className="flex justify-end gap-3 mb-4">
-          <button className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.7rem] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2">
-            <Download size={14} /> Export
-          </button>
-          <button 
-            onClick={() => setIsRegModalOpen(true)} 
-            className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-[0.7rem] font-medium transition-all flex items-center gap-2"
-          >
-            <Plus size={14} /> New Instructor
-          </button>
         </div>
       </header>
 
       {/* 2. RESPONSIVE TABLE CONTAINER */}
-      <div className="flex-1 px-4 md:px-8 pb-8 overflow-y-auto custom-scrollbar">
-        
-        {/* MOBILE VIEW */}
-        <div className="grid grid-cols-1 gap-4 md:hidden">
-          {paginatedInstructors.map((ins) => (
-            <div key={ins.id} className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-all">
-              {ins.status === 'Blocked' && <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />}
-              
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-[0.85rem] font-medium text-slate-800 dark:text-white">{ins.name}</h3>
-                  <p className="text-[0.6rem] font-sora text-slate-400 uppercase tracking-tighter">ID: {ins.id}</p>
-                </div>
-                <span className={`px-2 py-0.5 rounded text-[0.6rem] font-sora font-semibold uppercase tracking-wider ${
-                  ins.status === 'Active' 
-                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
-                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                }`}>
-                  {ins.status}
-                </span>
-              </div>
-
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2 text-[0.7rem] text-slate-600 dark:text-slate-400">
-                  <Mail size={12} className="text-teal-500" /> {ins.email}
-                </div>
-                <div className="flex items-center gap-2 text-[0.7rem] text-slate-600 dark:text-slate-400">
-                  <MapPin size={12} className="text-teal-500" /> {ins.location}
-                </div>
-                <div className="flex items-center gap-2 text-[0.7rem] text-slate-600 dark:text-slate-400">
-                  <Phone size={12} className="text-teal-500" /> {ins.contact}
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => setSelectedInstructor(ins)}
-                  className="flex-1 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-[0.7rem] font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5"
-                >
-                  <ScanEye size={14} /> View Details
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* DESKTOP VIEW */}
-        <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm transition-all">
-          <table className="w-full text-left">
-            <thead className="bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
-              <tr className="text-[0.75rem] font-sora font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                <th className="px-5 py-3">Instructor Details</th>
-                <th className="px-5 py-3">Location</th>
-                <th className="px-5 py-3">Contact</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-right">Actions</th>
-               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {paginatedInstructors.map((ins) => (
-                <tr key={ins.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors group">
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-semibold text-white ${
-                        ins.status === 'Blocked' 
-                          ? 'bg-slate-400 dark:bg-slate-600' 
-                          : 'bg-teal-500'
-                      }`}>
-                        {ins.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="text-[0.8rem] font-medium text-slate-800 dark:text-white leading-tight">
-                          {ins.name}
-                        </div>
-                        <div className="text-[0.65rem] text-slate-500 mt-0.5 font-sora">
-                          {ins.email}
-                        </div>
-                      </div>
-                    </div>
-                   </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-1.5 text-[0.75rem] dark:text-slate-300">
-                      <MapPin size={12} className="text-slate-400 shrink-0" />
-                      <span>{ins.location}</span>
-                    </div>
-                    <div className="text-[0.6rem] font-sora text-slate-400 mt-1">Success: {ins.success}%</div>
-                   </td>
-                  <td className="px-5 py-3">
-                    <div className="text-[0.7rem] text-slate-600 dark:text-slate-300">{ins.contact}</div>
-                    <div className="text-[0.6rem] font-sora text-slate-400 mt-1">{ins.vehicle} • {ins.plate}</div>
-                   </td>
-                  <td className="px-5 py-3">
-                    <span className={`inline-flex px-2 py-0.5 rounded text-[0.6rem] font-sora font-semibold uppercase tracking-wider ${
-                      ins.status === 'Active' 
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
-                        : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+      <main className="flex-1 px-4 sm:px-6 lg:px-8 pb-8 overflow-x-hidden">
+        <div className="max-w-[1800px] mx-auto">
+          
+          {/* MOBILE VIEW (Cards) */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {paginatedInstructors.map((ins) => (
+              <div key={ins.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-all">
+                {ins.status === 'Blocked' && <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500" />}
+                
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${
+                      ins.status === 'Blocked' 
+                        ? 'bg-slate-400 dark:bg-slate-600 text-white' 
+                        : 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
                     }`}>
-                      {ins.status}
-                    </span>
-                   </td>
-                  <td className="px-5 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {/* View Button - Always visible */}
-                      <button 
-                        onClick={() => setSelectedInstructor(ins)} 
-                        className="group relative p-1.5 text-slate-400 dark:text-slate-500 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 active:scale-95"
-                        title="View Instructor Details"
-                      >
-                        <ScanEye size={18} className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
-                      </button>
+                      {ins.name.charAt(0)}
                     </div>
-                   </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-800 dark:text-white leading-tight">{ins.name}</h3>
+                      <p className="text-xs font-mono text-slate-400 mt-0.5">ID: #{ins.id}</p>
+                    </div>
+                  </div>
+                  <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${
+                    ins.status === 'Active' 
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                  }`}>
+                    {ins.status}
+                  </span>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                    <Mail size={16} className="text-teal-500 shrink-0" /> 
+                    <span className="truncate">{ins.email}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                    <MapPin size={16} className="text-teal-500 shrink-0" /> 
+                    <span>{ins.location}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                    <Phone size={16} className="text-teal-500 shrink-0" /> 
+                    <span>{ins.contact}</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setSelectedInstructor(ins)}
+                    className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-teal-600 hover:text-white text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+                  >
+                    <ScanEye size={18} /> View Details
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* DESKTOP VIEW (Table) */}
+          <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Instructor Details</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Location</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Contact & Vehicle</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Status</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {paginatedInstructors.map((ins) => (
+                    <tr key={ins.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-bold text-white shadow-sm ${
+                            ins.status === 'Blocked' 
+                              ? 'bg-slate-400 dark:bg-slate-600' 
+                              : 'bg-teal-500'
+                          }`}>
+                            {ins.name.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="text-base font-bold text-slate-800 dark:text-white">{ins.name}</div>
+                            <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">{ins.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-300">
+                          <MapPin size={14} className="text-teal-500" /> {ins.location}
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="text-sm font-bold text-slate-700 dark:text-slate-300">{ins.contact}</div>
+                        <div className="text-xs text-slate-400 mt-1 font-semibold uppercase tracking-wider">{ins.vehicle} • {ins.plate}</div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
+                          ins.status === 'Active' 
+                            ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' 
+                            : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                        }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${ins.status === 'Active' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+                          {ins.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-right">
+                        <button 
+                          onClick={() => setSelectedInstructor(ins)}
+                          className="p-2.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-all"
+                        >
+                          <ScanEye size={22} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           {filteredInstructors.length === 0 && (
-            <div className="py-16 text-center text-slate-400 dark:text-slate-500 text-[0.7rem] font-sora">
-              No instructors found for these filters.
+            <div className="py-24 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
+              <AlertCircle className="mx-auto text-slate-300 mb-4" size={56} />
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-lg">No instructors found matching your filters.</p>
+              <button 
+                onClick={() => {
+                  setLocationFilter("All");
+                  setStatusFilter("All");
+                  setSearchTerm("");
+                  setCurrentPage(1);
+                }} 
+                className="mt-4 text-teal-600 font-bold hover:underline"
+              >
+                Clear all filters
+              </button>
             </div>
           )}
         </div>
-      </div>
+      </main>
 
-      {/* Pagination */}
-      {totalItems > itemsPerPage && (
-        <div className="flex justify-center py-6">
-          <Pagination 
-            currentPage={currentPage} 
-            totalItems={totalItems} 
-            itemsPerPage={itemsPerPage} 
-            onPageChange={handlePageChange} 
-          />
+      {/* Pagination and Export Button Section */}
+      {(totalItems > itemsPerPage || filteredInstructors.length > 0) && (
+        <div className="px-4 sm:px-6 lg:px-8 pb-8">
+          {/* Pagination */}
+          {totalItems > itemsPerPage && (
+            <div className="flex justify-center py-4">
+              <Pagination 
+                currentPage={currentPage} 
+                totalItems={totalItems} 
+                itemsPerPage={itemsPerPage} 
+                onPageChange={handlePageChange} 
+              />
+            </div>
+          )}
+          
+          {/* Export Button - Full width on mobile, right-aligned on larger screens */}
+          <div className="flex justify-end mt-4">
+            <button className="w-full sm:w-auto px-6 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[0.85rem] font-medium text-slate-900 dark:text-white hover:bg-teal-600 hover:text-white dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-sm">
+              <Download size={18} /> Export Instructors List
+            </button>
+          </div>
         </div>
       )}
 

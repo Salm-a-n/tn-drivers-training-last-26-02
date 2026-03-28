@@ -932,44 +932,44 @@ const InstructorDetailModal = ({
   const deleteTooltip = !canDelete ? "Only blocked instructors can be deleted" : "";
 
   const DataField = ({ label, name, value, onChange, isEditing, type = "text" }) => (
-    <div className="flex flex-col gap-1">
-      <label className="text-[0.7rem] font-mono font-semibold uppercase tracking-wider text-slate-500 ml-1">{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{label}</label>
       {isEditing ? (
         <input 
           type={type} 
           name={name} 
           value={value || ''} 
           onChange={onChange} 
-          className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-[0.8rem] font-medium text-slate-900 dark:text-slate-200 transition-all"
+          className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm font-medium text-slate-900 dark:text-white transition-all"
         />
       ) : (
-        <div className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-transparent text-[0.8rem] font-medium text-slate-700 dark:text-slate-300 min-h-[42px] flex items-center">
-          {value || <span className="text-slate-400 text-[0.7rem] italic">Not Provided</span>}
+        <div className="px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300 min-h-[42px] flex items-center">
+          {value || <span className="text-slate-400 text-xs italic">Not Provided</span>}
         </div>
       )}
     </div>
   );
 
   const SelectField = ({ label, name, value, onChange, isEditing, options, disabled }) => (
-    <div className="flex flex-col gap-1">
-      <label className="text-[0.7rem] font-mono font-semibold uppercase tracking-wider text-slate-500 ml-1">{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{label}</label>
       {isEditing ? (
         <select 
           name={name} 
           value={value || ''} 
           onChange={onChange} 
           disabled={disabled}
-          className={`w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 outline-none text-[0.8rem] font-medium transition-all
+          className={`w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 outline-none text-sm font-medium transition-all
             ${disabled 
               ? 'bg-slate-100 dark:bg-slate-800 cursor-not-allowed text-slate-400' 
-              : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 cursor-pointer'
+              : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 cursor-pointer'
             }`}
         >
           <option value="">Select {label}...</option>
           {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
         </select>
       ) : (
-        <div className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-[0.8rem] font-medium text-slate-700 dark:text-slate-300 capitalize min-h-[42px] flex items-center">
+        <div className="px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300 capitalize min-h-[42px] flex items-center">
           {value || '---'}
         </div>
       )}
@@ -977,88 +977,104 @@ const InstructorDetailModal = ({
   );
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>
-      <div className="bg-white dark:bg-slate-950 w-full max-w-6xl h-full max-h-[90vh] rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-slate-950 w-full max-w-7xl h-full max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
         
         {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 font-semibold text-base">
-              {editData.name?.[0] || 'I'}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-semibold tracking-tight text-slate-800 dark:text-white" style={{ fontFamily: "'Sora', 'Inter', system-ui" }}>{editData.name}</h2>
-                <span className={`text-[0.65rem] font-mono font-semibold px-2 py-0.5 rounded-full ${editData.status === 'Active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
-                  {editData.status}
-                </span>
-              </div>
-              <p className="text-[0.65rem] font-mono text-slate-500">ID: {instructor.id}</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {/* Block/Unblock Button */}
-            <div className="relative group">
-              <button 
-                onClick={handleToggleBlock}
-                disabled={blockLoading || (editData.status === "Active" && !canBlock)}
-                title={blockTooltip}
-                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-medium text-[0.75rem] transition-all ${
-                  editData.status === "Blocked" 
-                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800/40" 
-                    : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-800/40"
-                } ${(editData.status === "Active" && !canBlock) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-              >
-                {blockLoading ? <Loader2 className="animate-spin" size={14} /> : editData.status === "Blocked" ? <CheckCircle size={14} /> : <Ban size={14} />}
-                {editData.status === "Blocked" ? 'Activate' : 'Block'}
-              </button>
-              {editData.status === "Active" && !canBlock && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[0.6rem] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                  {blockTooltip}
-                </div>
-              )}
-            </div>
-            
-            {/* Delete Button - Only visible for blocked instructors */}
-            {editData.status === "Blocked" && (
-              <div className="relative group">
-                <button 
-                  onClick={handleDelete}
-                  disabled={deleteLoading}
-                  title={deleteTooltip}
-                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-medium text-[0.75rem] transition-all bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-800/40 cursor-pointer"
-                >
-                  {deleteLoading ? <Loader2 className="animate-spin" size={14} /> : <Trash2 size={14} />}
-                  Delete
-                </button>
-              </div>
-            )}
-            
-            {/* Edit/Save Button */}
-            <button 
-              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-              disabled={loading}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-medium text-[0.75rem] transition-all ${isEditing ? 'bg-teal-500 hover:bg-teal-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'} ${isEditing ? 'text-white' : 'text-slate-700 dark:text-slate-300'}`}
-            >
-              {loading ? <Loader2 className="animate-spin" size={14} /> : isEditing ? <Save size={14} /> : <Edit3 size={14} />}
-              {isEditing ? 'Save' : 'Edit'}
-            </button>
-            
-            {/* Close Button */}
-            <button onClick={onClose} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 transition-colors">
-              <X size={18} />
-            </button>
-          </div>
+        <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 gap-3 sm:gap-4">
+  {/* Left Section - Avatar and Info */}
+  <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1">
+    <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 font-bold text-sm sm:text-base md:text-lg flex-shrink-0">
+      {editData.name?.[0] || 'I'}
+    </div>
+    <div className="min-w-0 flex-1">
+      <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+        <h2 className="text-sm sm:text-lg md:text-xl font-bold tracking-tight text-slate-800 dark:text-white truncate">
+          {editData.name}
+        </h2>
+        <span className={`text-[9px] sm:text-[10px] md:text-xs font-semibold px-1.5 sm:px-2 md:px-3 py-0.5 rounded-full whitespace-nowrap ${
+          editData.status === 'Active' 
+            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+        }`}>
+          {editData.status}
+        </span>
+      </div>
+      <p className="text-[10px] sm:text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+        ID: {instructor.id}
+      </p>
+    </div>
+  </div>
+  
+  {/* Right Section - Action Buttons */}
+  <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+    {/* Block/Unblock Button */}
+    <div className="relative group">
+      <button 
+        onClick={handleToggleBlock}
+        disabled={blockLoading || (editData.status === "Active" && !canBlock)}
+        title={blockTooltip}
+        className={`flex items-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-5 py-1 sm:py-1.5 md:py-2 rounded-lg font-semibold text-[10px] sm:text-xs md:text-sm transition-all ${
+          editData.status === "Blocked" 
+            ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30" 
+            : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30"
+        } ${(editData.status === "Active" && !canBlock) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      >
+        {blockLoading ? <Loader2 className="animate-spin" size={12} /> : editData.status === "Blocked" ? <CheckCircle size={12} /> : <Ban size={12} />}
+        <span>{editData.status === "Blocked" ? 'Activate' : 'Block'}</span>
+      </button>
+      {editData.status === "Active" && !canBlock && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+          {blockTooltip}
         </div>
+      )}
+    </div>
+    
+    {/* Delete Button - Only visible for blocked instructors */}
+    {editData.status === "Blocked" && (
+      <button 
+        onClick={handleDelete}
+        disabled={deleteLoading}
+        title={deleteTooltip}
+        className="flex items-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-5 py-1 sm:py-1.5 md:py-2 rounded-lg font-semibold text-[10px] sm:text-xs md:text-sm transition-all bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer"
+      >
+        {deleteLoading ? <Loader2 className="animate-spin" size={12} /> : <Trash2 size={12} />}
+        <span>Delete</span>
+      </button>
+    )}
+    
+    {/* Edit/Save Button */}
+    <button 
+      onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+      disabled={loading}
+      className={`flex items-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-5 py-1 sm:py-1.5 md:py-2 rounded-lg font-semibold text-[10px] sm:text-xs md:text-sm transition-all ${
+        isEditing 
+          ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-lg shadow-teal-500/20' 
+          : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+      }`}
+    >
+      {loading ? <Loader2 className="animate-spin" size={12} /> : isEditing ? <Save size={12} /> : <Edit3 size={12} />}
+      <span>{isEditing ? 'Save' : 'Edit'}</span>
+    </button>
+    
+    {/* Close Button */}
+    <button 
+      onClick={onClose} 
+      className="p-1 sm:p-1.5 md:p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 transition-colors"
+    >
+      <X size={14} className="sm:w-4 sm:h-4 md:w-5 md:h-5" />
+    </button>
+  </div>
+</div>
 
-        {/* SCROLLABLE BODY - Same as before */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* SCROLLABLE BODY */}
+        <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
           
           {/* Warning Banner - Show if trying to block with students */}
           {editData.status === "Active" && hasStudents && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg flex items-start gap-2">
-              <AlertCircle size={14} className="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
-              <p className="text-[0.7rem] text-red-800 dark:text-red-300">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-xl flex items-start gap-3">
+              <AlertCircle size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-800 dark:text-amber-300">
                 <span className="font-semibold">Cannot Block:</span> This instructor has {instructor.students.length} active student(s). Please transfer all students before blocking.
               </p>
             </div>
@@ -1066,27 +1082,28 @@ const InstructorDetailModal = ({
           
           {/* Edit Mode Warning */}
           {isEditing && hasStudents && (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 rounded-lg flex items-start gap-2">
-              <AlertCircle size={14} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-              <p className="text-[0.7rem] text-amber-800 dark:text-amber-300">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-xl flex items-start gap-3">
+              <AlertCircle size={18} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-blue-800 dark:text-blue-300">
                 <span className="font-semibold">Note:</span> Assigned Location and Status are locked because this instructor has active students. Reassign students before changing.
               </p>
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* LEFT COLUMN - 2/3 width */}
             <div className="lg:col-span-2 space-y-6">
               
               {/* Personal Profile Section */}
-              <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-                <h3 className="text-[0.7rem] font-mono font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <User size={14} /> Account & Identity
+              <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                  <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                  Account & Identity
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <DataField label="Full Name" name="name" value={editData.name} onChange={handleChange} isEditing={isEditing} />
-                  <DataField label="Email" name="email" value={editData.email} onChange={handleChange} isEditing={isEditing} />
-                  <DataField label="Phone" name="phone" value={editData.phone} onChange={handleChange} isEditing={isEditing} />
+                  <DataField label="Email Address" name="email" value={editData.email} onChange={handleChange} isEditing={isEditing} />
+                  <DataField label="Phone Number" name="phone" value={editData.phone} onChange={handleChange} isEditing={isEditing} />
                   <SelectField 
                     label="Status" 
                     name="status" 
@@ -1097,16 +1114,17 @@ const InstructorDetailModal = ({
                     options={['Active', 'Inactive', 'Blocked']} 
                   />
                   <DataField label="Date of Birth" name="dob" value={editData.dob} onChange={handleChange} isEditing={isEditing} type="date" />
-                  <DataField label="Language" name="language" value={editData.language} onChange={handleChange} isEditing={isEditing} />
+                  <DataField label="Primary Language" name="language" value={editData.language} onChange={handleChange} isEditing={isEditing} />
                 </div>
               </section>
 
               {/* Address Section */}
-              <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-                <h3 className="text-[0.7rem] font-mono font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <MapPin size={14} /> Address & Location
+              <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                  <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                  Address & Location
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <DataField label="Street Address" name="street_address" value={editData.street_address} onChange={handleChange} isEditing={isEditing} />
                   <DataField label="City" name="city" value={editData.city} onChange={handleChange} isEditing={isEditing} />
                   <DataField label="Province" name="province" value={editData.province} onChange={handleChange} isEditing={isEditing} />
@@ -1125,13 +1143,14 @@ const InstructorDetailModal = ({
               </section>
 
               {/* Professional Section */}
-              <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-                <h3 className="text-[0.7rem] font-mono font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Briefcase size={14} /> Professional & Licensing
+              <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                  <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                  Professional & Licensing
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <DataField label="License No" name="licence_no" value={editData.licence_no} onChange={handleChange} isEditing={isEditing} />
-                  <DataField label="Instructor License" name="inst_license_no" value={editData.inst_license_no} onChange={handleChange} isEditing={isEditing} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  <DataField label="Driver's License #" name="licence_no" value={editData.licence_no} onChange={handleChange} isEditing={isEditing} />
+                  <DataField label="Instructor License #" name="inst_license_no" value={editData.inst_license_no} onChange={handleChange} isEditing={isEditing} />
                   <DataField label="License Expiry" name="licence_expiry" value={editData.licence_expiry} onChange={handleChange} isEditing={isEditing} type="date" />
                   <SelectField label="Employment Status" name="emp_status" value={editData.emp_status} onChange={handleChange} isEditing={isEditing} options={['Full-time', 'Part-time', 'Contract']} />
                   <div className="md:col-span-2">
@@ -1145,51 +1164,53 @@ const InstructorDetailModal = ({
             <div className="space-y-6">
               
               {/* Vehicle Info */}
-              <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-                <h3 className="text-[0.7rem] font-mono font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Car size={14} /> Vehicle Assignment
+              <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                  <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                  Vehicle Assignment
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <p className="text-[0.65rem] font-mono text-slate-500">Vehicle</p>
-                    <p className="text-[0.85rem] font-medium text-slate-800 dark:text-slate-200">{instructor.vehicle}</p>
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Vehicle</p>
+                    <p className="text-sm font-semibold text-slate-800 dark:text-white">{instructor.vehicle}</p>
                   </div>
                   <div>
-                    <p className="text-[0.65rem] font-mono text-slate-500">Plate Number</p>
-                    <p className="text-[0.75rem] font-mono font-semibold text-slate-800 dark:text-slate-200 uppercase">{instructor.plate}</p>
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Plate Number</p>
+                    <p className="text-sm font-mono font-semibold text-slate-800 dark:text-white uppercase">{instructor.plate}</p>
                   </div>
                 </div>
               </section>
 
               {/* Active Students Section */}
-              <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-[0.7rem] font-mono font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2">
-                    <Users size={14} /> Active Students
+              <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div className="flex justify-between items-center mb-5">
+                  <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2">
+                    <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                    Active Students
                   </h3>
-                  <span className="text-[0.65rem] font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full text-slate-600">
+                  <span className="text-xs font-semibold bg-white dark:bg-slate-900 px-2.5 py-1 rounded-full text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                     {instructor.students?.length || 0}
                   </span>
                 </div>
 
                 <div className="space-y-2">
                   {instructor.students?.map(stu => (
-                    <div key={stu.id} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 flex justify-between items-center group">
+                    <div key={stu.id} className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex justify-between items-center group hover:shadow-sm transition-all">
                       <div>
-                        <p className="text-[0.8rem] font-medium text-slate-800 dark:text-white">{stu.name}</p>
-                        <p className="text-[0.65rem] font-mono text-slate-500">{stu.city} • {stu.permit_number}</p>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-white">{stu.name}</p>
+                        <p className="text-xs font-mono text-slate-500 mt-0.5">{stu.city} • {stu.permit_number}</p>
                       </div>
                       <button 
                         onClick={() => setTransferingStudent(stu)}
-                        className="p-1.5 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-all"
+                        className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-all"
                         title="Transfer to same-location staff"
                       >
-                        <MoveHorizontal size={14} />
+                        <MoveHorizontal size={16} />
                       </button>
                     </div>
                   ))}
                   {(!instructor.students || instructor.students.length === 0) && (
-                    <p className="text-center py-4 text-[0.7rem] text-slate-400 italic">No active students assigned.</p>
+                    <p className="text-center py-6 text-sm text-slate-400 italic">No active students assigned.</p>
                   )}
                 </div>
               </section>
@@ -1198,10 +1219,10 @@ const InstructorDetailModal = ({
         </div>
 
         {/* FOOTER */}
-        <footer className="px-6 py-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-end shrink-0">
+        <footer className="px-8 py-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-end shrink-0">
           <button 
             onClick={onClose}
-            className="px-5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-[0.75rem] transition-all"
+            className="px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition-all"
           >
             Close Profile
           </button>
@@ -1209,27 +1230,29 @@ const InstructorDetailModal = ({
 
         {/* TRANSFER STUDENT MODAL */}
         {transferingStudent && (
-          <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-              <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+          <div className="fixed inset-0 z-[100] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-800 dark:text-white">Transfer Student</h4>
-                  <p className="text-[0.7rem] text-slate-500">Reassigning <span className="font-medium text-teal-600">{transferingStudent.name}</span></p>
+                  <h4 className="text-lg font-bold text-slate-800 dark:text-white">Transfer Student</h4>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Reassigning <span className="font-semibold text-teal-600">{transferingStudent.name}</span>
+                  </p>
                 </div>
-                <button onClick={() => setTransferingStudent(null)} className="p-1 text-slate-400 hover:text-red-500 rounded-lg">
-                  <X size={16} />
+                <button onClick={() => setTransferingStudent(null)} className="p-1 text-slate-400 hover:text-red-500 rounded-lg transition-colors">
+                  <X size={20} />
                 </button>
               </div>
               
-              <div className="p-5 space-y-4">
+              <div className="p-6 space-y-4">
                 <div>
-                  <label className="text-[0.65rem] font-mono font-semibold uppercase tracking-wider text-slate-500 block mb-1">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-2">
                     Target Instructor ({currentLocation})
                   </label>
                   <select 
                     value={newInstructorId}
                     onChange={(e) => setNewInstructorId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[0.8rem] outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                    className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all"
                   >
                     <option value="">Select instructor...</option>
                     {availableSameLocationStaff.map(i => (
@@ -1237,18 +1260,21 @@ const InstructorDetailModal = ({
                     ))}
                   </select>
                   {availableSameLocationStaff.length === 0 && (
-                    <p className="text-[0.65rem] text-amber-600 mt-1">No other instructors available in this location</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">No other instructors available in this location</p>
                   )}
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button onClick={() => setTransferingStudent(null)} className="flex-1 px-3 py-2 text-[0.75rem] font-medium text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => setTransferingStudent(null)} 
+                    className="flex-1 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                  >
                     Cancel
                   </button>
                   <button 
                     onClick={handleTransfer} 
                     disabled={!newInstructorId || availableSameLocationStaff.length === 0}
-                    className="flex-1 px-3 py-2 bg-teal-500 hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-[0.75rem] font-medium transition-all"
+                    className="flex-1 px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-semibold transition-all shadow-lg shadow-teal-500/20"
                   >
                     Confirm Transfer
                   </button>

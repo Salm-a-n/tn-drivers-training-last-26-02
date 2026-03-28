@@ -276,7 +276,6 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import {
     X, Car, Hash, Palette, MapPin,
@@ -395,101 +394,110 @@ const VehicleDetailModal = ({
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4 transition-all">
-            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={onClose} />
-
-            <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-t-2xl md:rounded-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[95vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-slate-950 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
 
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/30">
+                <div className="flex items-center justify-between px-8 py-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
                     <div>
-                        <h2 className="text-base font-semibold tracking-tight text-slate-800 dark:text-white">
-                            Asset <span className="text-teal-600 dark:text-teal-400">Intelligence</span>
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+                            Asset <span className="text-teal-600 dark:text-teal-400">Details</span>
                         </h2>
-                        <p className="text-[0.55rem] font-mono text-slate-400 uppercase tracking-wider mt-0.5">VIN: {formData.vin || 'N/A'}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                            VIN: {formData.vin || 'N/A'}
+                        </p>
                     </div>
                     <div className="flex gap-2">
                         {!isEditing ? (
                             <button 
                                 onClick={() => setIsEditing(true)} 
-                                className="p-1.5 bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 rounded-lg hover:bg-teal-500 hover:text-white transition-all"
+                                className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-teal-600 hover:text-white transition-all"
                             >
-                                <Edit3 size={16} />
+                                <Edit3 size={18} />
                             </button>
                         ) : (
                             <button 
                                 onClick={handleSave} 
                                 disabled={loading} 
-                                className="p-1.5 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all disabled:opacity-60"
+                                className="p-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all disabled:opacity-60"
                             >
-                                {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={16} />}
+                                {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={18} />}
                             </button>
                         )}
                         <button 
                             onClick={onClose} 
-                            className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-400 hover:text-red-500 transition-all"
+                            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 transition-colors"
                         >
-                            <X size={16} />
+                            <X size={20} />
                         </button>
                     </div>
                 </div>
 
-                {/* Success Message */}
-                {saveSuccess && (
-                    <div className="mx-6 mt-3 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-center">
-                        <p className="text-[0.7rem] text-green-600 dark:text-green-400">Vehicle updated successfully!</p>
-                    </div>
-                )}
-
                 {/* Content */}
-                <div className="p-6 space-y-6 overflow-y-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <DataField 
-                            icon={<Car size={14}/>} 
-                            label="Vehicle Name" 
-                            value={formData.name} 
-                            isEditing={isEditing} 
-                            onChange={v => setFormData({...formData, name: v})} 
-                            error={errors.car_name?.[0]} 
-                        />
-                        <DataField 
-                            icon={<Hash size={14}/>} 
-                            label="Plate Number" 
-                            value={formData.plate} 
-                            isEditing={isEditing} 
-                            onChange={v => setFormData({...formData, plate: v})} 
-                            className="uppercase" 
-                            error={errors.number_plate?.[0]} 
-                        />
-                        <DataField 
-                            icon={<Palette size={14}/>} 
-                            label="Color" 
-                            value={formData.color} 
-                            isEditing={isEditing} 
-                            onChange={v => setFormData({...formData, color: v})} 
-                            error={errors.color?.[0]} 
-                        />
-                        <DataField 
-                            icon={<Gauge size={14}/>} 
-                            label="Odometer (KM)" 
-                            value={formData.km} 
-                            isEditing={isEditing} 
-                            type="number" 
-                            onChange={v => setFormData({...formData, km: v})} 
-                            error={errors.odometer?.[0]} 
-                        />
-                    </div>
+                <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
+                    
+                    {/* Success Message */}
+                    {saveSuccess && (
+                        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-3 rounded-xl">
+                            <p className="text-sm text-green-600 dark:text-green-400 font-medium text-center">Vehicle updated successfully!</p>
+                        </div>
+                    )}
 
-                    {/* Compliance Section */}
-                    <div className="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
-                        <h3 className="text-[0.6rem] font-mono font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                            <ShieldCheck size={12} className="text-teal-500" /> Compliance Documents
+                    {/* Basic Information Section */}
+                    <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                            <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                            Basic Information
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <DataField 
+                                icon={<Car size={14}/>} 
+                                label="Vehicle Name" 
+                                value={formData.name} 
+                                isEditing={isEditing} 
+                                onChange={v => setFormData({...formData, name: v})} 
+                                error={errors.car_name?.[0]} 
+                            />
+                            <DataField 
+                                icon={<Hash size={14}/>} 
+                                label="Plate Number" 
+                                value={formData.plate} 
+                                isEditing={isEditing} 
+                                onChange={v => setFormData({...formData, plate: v})} 
+                                className="uppercase" 
+                                error={errors.number_plate?.[0]} 
+                            />
+                            <DataField 
+                                icon={<Palette size={14}/>} 
+                                label="Color" 
+                                value={formData.color} 
+                                isEditing={isEditing} 
+                                onChange={v => setFormData({...formData, color: v})} 
+                                error={errors.color?.[0]} 
+                            />
+                            <DataField 
+                                icon={<Gauge size={14}/>} 
+                                label="Odometer (KM)" 
+                                value={formData.km} 
+                                isEditing={isEditing} 
+                                type="number" 
+                                onChange={v => setFormData({...formData, km: v})} 
+                                error={errors.odometer?.[0]} 
+                            />
+                        </div>
+                    </section>
+
+                    {/* Compliance Documents Section */}
+                    <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                            <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                            Compliance Documents
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div className="space-y-5">
                                 <DataField 
                                     icon={<ShieldCheck size={14}/>} 
-                                    label="Insurance No." 
+                                    label="Insurance Number" 
                                     value={formData.insuranceNo} 
                                     isEditing={isEditing} 
                                     onChange={v => setFormData({...formData, insuranceNo: v})} 
@@ -505,7 +513,7 @@ const VehicleDetailModal = ({
                                     error={errors.insurance_expiry?.[0]} 
                                 />
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-5">
                                 <DataField 
                                     icon={<Bookmark size={14}/>} 
                                     label="RC Number" 
@@ -525,30 +533,31 @@ const VehicleDetailModal = ({
                                 />
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    {/* Location & Instructor Section */}
-                    <div className="bg-teal-50/30 dark:bg-teal-900/10 p-4 rounded-xl border border-teal-100 dark:border-teal-800 space-y-4">
-                        <h3 className="text-[0.6rem] font-mono font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                            <MapPin size={12} className="text-teal-500" /> Assignment Details
+                    {/* Assignment Details Section */}
+                    <section className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+                            <div className="w-1 h-5 bg-teal-500 rounded-full"></div>
+                            Assignment Details
                         </h3>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {/* Location Field */}
-                            <div className="space-y-1.5">
-                                <label className="text-[0.55rem] font-mono font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                                    <MapPin size={10} className="text-teal-500" /> Branch Location
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                                    <MapPin size={14} className="text-teal-500" /> Branch Location
                                 </label>
                                 {isEditing ? (
                                     isVehicleAssigned ? (
-                                        <div className="w-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400 flex items-center gap-2">
-                                            <AlertCircle size={12} />
+                                        <div className="w-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-4 py-2.5 text-sm font-medium text-amber-700 dark:text-amber-400 flex items-center gap-2">
+                                            <AlertCircle size={16} />
                                             <span>Location locked - vehicle assigned to instructor</span>
                                         </div>
                                     ) : (
                                         <div className="relative">
                                             <select
-                                                className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-medium dark:text-white outline-none focus:ring-1 focus:ring-teal-500 appearance-none cursor-pointer"
+                                                className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none appearance-none cursor-pointer transition-all"
                                                 value={formData.location_id || ''}
                                                 onChange={(e) => {
                                                     const id = parseInt(e.target.value);
@@ -563,51 +572,51 @@ const VehicleDetailModal = ({
                                                     </option>
                                                 ))}
                                             </select>
-                                            <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                            <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                                         </div>
                                     )
                                 ) : (
-                                    <p className="text-sm font-medium text-slate-800 dark:text-white px-1">
+                                    <div className="px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-white">
                                         {getLocationName()}
-                                    </p>
+                                    </div>
                                 )}
                             </div>
 
                             {/* Instructor Field */}
-                            <div className="space-y-1.5">
-                                <label className="text-[0.55rem] font-mono font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                                    <User size={10} className={`${isVehicleAssigned ? 'text-teal-500' : 'text-slate-400'}`} /> Assigned Instructor
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                                    <User size={14} className={`${isVehicleAssigned ? 'text-teal-500' : 'text-slate-400'}`} /> Assigned Instructor
                                 </label>
-                                <div className={`w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium ${
+                                <div className={`px-4 py-2.5 rounded-lg border text-sm font-medium ${
                                     isVehicleAssigned 
-                                        ? 'text-slate-800 dark:text-white' 
-                                        : 'text-slate-400 dark:text-slate-500'
+                                        ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white' 
+                                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'
                                 }`}>
                                     {isVehicleAssigned ? currentVehicle.instructor : 'Unassigned'}
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
                     {/* Document Section */}
-                    <div className="bg-slate-900 dark:bg-slate-800 rounded-xl p-4 text-white flex items-center justify-between relative group overflow-hidden border border-teal-500/20">
-                        <div className="relative z-10 flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-teal-400 border border-white/10">
-                                <FileText size={20} />
+                    <section className="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 rounded-xl p-6 text-white relative overflow-hidden">
+                        <div className="relative z-10 flex items-center gap-5">
+                            <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center text-teal-400 border border-white/20">
+                                <FileText size={24} />
                             </div>
-                            <div>
-                                <p className="text-[0.55rem] font-mono text-teal-400 uppercase tracking-wider mb-0.5">Onboarded Documentation</p>
-                                <p className="text-xs font-medium truncate max-w-[150px]">
+                            <div className="flex-1">
+                                <p className="text-xs font-semibold text-teal-400 uppercase tracking-wider mb-1">Onboarded Documentation</p>
+                                <p className="text-sm font-medium truncate max-w-[200px]">
                                     {newFile ? newFile.name : `Doc_${formData.plate || 'Asset'}.pdf`}
                                 </p>
                                 <div className="flex gap-2 mt-2">
                                     {formData.carDocument && (
-                                        <a href="#" className="text-[0.55rem] font-mono uppercase tracking-wider bg-white/10 hover:bg-white/20 px-2 py-1 rounded transition-all">
+                                        <a href="#" className="text-xs font-semibold uppercase tracking-wider bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg transition-all">
                                             View
                                         </a>
                                     )}
                                     {isEditing && (
-                                        <label className="text-[0.55rem] font-mono uppercase tracking-wider bg-teal-500/20 text-teal-400 px-2 py-1 rounded cursor-pointer">
+                                        <label className="text-xs font-semibold uppercase tracking-wider bg-teal-500/20 text-teal-400 px-3 py-1 rounded-lg cursor-pointer hover:bg-teal-500/30 transition-all">
                                             Replace
                                             <input type="file" accept=".pdf,.jpg,.png" className="hidden" onChange={(e) => setNewFile(e.target.files[0])} />
                                         </label>
@@ -615,11 +624,11 @@ const VehicleDetailModal = ({
                                 </div>
                             </div>
                         </div>
-                        <ShieldCheck size={80} className="absolute -right-4 -bottom-4 text-white opacity-5 rotate-12 group-hover:rotate-0 transition-all duration-700" />
-                    </div>
+                        <ShieldCheck size={100} className="absolute -right-8 -bottom-8 text-white opacity-5 rotate-12" />
+                    </section>
 
                     {/* Action Buttons */}
-                    <div className="pt-2">
+                    <div className="pt-4">
                         {isEditing ? (
                             <div className="flex gap-3">
                                 <button 
@@ -632,25 +641,25 @@ const VehicleDetailModal = ({
                                             rcExpiry: formatDate(currentVehicle.rcExpiry)
                                         }); 
                                     }} 
-                                    className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg text-[0.7rem] font-medium transition-all"
+                                    className="flex-1 px-6 py-3 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button 
                                     onClick={handleSave} 
                                     disabled={loading} 
-                                    className="flex-1 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-[0.7rem] font-medium transition-all flex items-center justify-center gap-2"
+                                    className="flex-1 px-6 py-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20"
                                 >
-                                    {loading ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={12} />} 
+                                    {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={16} />} 
                                     Save Changes
                                 </button>
                             </div>
                         ) : (
                             <button 
                                 onClick={handleDelete} 
-                                className="w-full py-2 text-red-500 font-medium text-[0.7rem] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-all border border-dashed border-transparent hover:border-red-200"
+                                className="w-full py-3 text-red-600 dark:text-red-400 font-semibold text-sm uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all border border-dashed border-transparent hover:border-red-200 dark:hover:border-red-800"
                             >
-                                <Trash2 size={14} /> Decommission Asset
+                                <Trash2 size={16} /> Decommission Asset
                             </button>
                         )}
                     </div>
@@ -661,23 +670,23 @@ const VehicleDetailModal = ({
 };
 
 const DataField = ({ icon, label, value, isEditing, onChange, type = 'text', className = '', error }) => (
-    <div className="space-y-1.5">
-        <label className="text-[0.55rem] font-mono font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+    <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
             <span className="text-teal-500">{icon}</span> {label}
         </label>
         {isEditing ? (
             <input
                 type={type}
-                className={`w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm font-medium dark:text-white outline-none focus:ring-1 focus:ring-teal-500 transition-all ${className}`}
+                className={`w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all ${className}`}
                 value={value || ''}
                 onChange={(e) => onChange(e.target.value)}
             />
         ) : (
-            <p className={`text-sm font-medium text-slate-800 dark:text-white px-1 ${className}`}>
-                {value || 'Not Set'}
-            </p>
+            <div className={`px-4 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-white ${className}`}>
+                {value || <span className="text-slate-400">Not Set</span>}
+            </div>
         )}
-        {error && <p className="text-[0.55rem] text-red-500 font-mono mt-0.5">{error}</p>}
+        {error && <p className="text-xs text-red-500 font-medium mt-0.5">{error}</p>}
     </div>
 );
 
