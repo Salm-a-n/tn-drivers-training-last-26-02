@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ProfileModal from "../ProfileModal";
+import NotificationModal from "../NotificationModal";
 import { Bell, Home } from "lucide-react";
 
 const InstructorNavbar = ({ isOpen, setIsOpen }) => {
@@ -8,12 +9,12 @@ const InstructorNavbar = ({ isOpen, setIsOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  const notifications = [
-    { id: 1, message: "New student assigned to you" },
-    { id: 2, message: "Schedule updated for tomorrow" },
-    { id: 3, message: "Expense claim approved" },
-  ];
+  // Simulate unread count for instructor
+  useEffect(() => {
+    setUnreadCount(3);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -66,10 +67,10 @@ const InstructorNavbar = ({ isOpen, setIsOpen }) => {
               <Home className="w-4 h-4 md:w-4.5 md:h-4.5 text-teal-600 dark:text-teal-400" strokeWidth={1.8} />
             </div>
             <div>
-              <h1 className="text-[0.95rem] sm:text-[1rem] md:text-[1.1rem] font-semibold tracking-tight text-slate-800 dark:text-slate-100 leading-tight">
+              <h1 className="text-[0.95rem] sm:text-[1.3rem] md:text-[1.5rem] font-semibold tracking-tight text-slate-800 dark:text-slate-100 leading-tight">
                 {pageTitle}
               </h1>
-              <div className="hidden sm:flex items-center gap-1.5 text-[0.6rem] md:text-[0.65rem] text-slate-500 dark:text-slate-400 font-mono tracking-wide">
+              <div className="hidden sm:flex items-center gap-1.5 text-[0.75rem] md:text-[1rem] lg:text-[1.1rem] text-slate-500 dark:text-slate-400 font-mono tracking-wide">
                 <span>{dateStr}</span>
                 <span className="text-slate-400">•</span>
                 <span>{timeStr}</span>
@@ -81,62 +82,29 @@ const InstructorNavbar = ({ isOpen, setIsOpen }) => {
         {/* RIGHT SECTION */}
         <div className="flex items-center gap-2 sm:gap-3">
 
-          {/* Notification Button */}
-          <div className="relative">
-            <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
-            >
-              <Bell className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-slate-600 dark:text-slate-400" strokeWidth={1.7} />
-              {notifications.length > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-              )}
-            </button>
-
-            {showNotifications && (
-              <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 overflow-hidden">
-                <div className="px-4 py-2.5 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
-                    Notifications
-                  </span>
-                </div>
-                <div className="max-h-64 overflow-y-auto">
-                  {notifications.map((n) => (
-                    <div
-                      key={n.id}
-                      className="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors border-b border-slate-100 dark:border-slate-700 last:border-0"
-                    >
-                      <div className="text-[0.75rem] font-medium text-slate-700 dark:text-slate-300">
-                        {n.message}
-                      </div>
-                      <div className="text-[0.6rem] text-slate-400 dark:text-slate-500 mt-1 font-mono">
-                        Just now
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          
 
           {/* Profile Section */}
           <button
             onClick={() => setShowProfile(true)}
-            className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+            className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 group"
+            title="Profile Settings"
           >
             <img
               src="https://i.pravatar.cc/36?u=instructor"
               alt="profile"
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700 group-hover:border-teal-300 transition-colors"
             />
-            <span className="text-[0.7rem] sm:text-[0.75rem] font-medium text-slate-700 dark:text-slate-300">
+            <span className="text-[0.7rem] sm:text-[0.75rem] font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
               Marc-André
             </span>
           </button>
         </div>
       </header>
 
+      {/* MODALS */}
       {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
+      {showNotifications && <NotificationModal onClose={() => setShowNotifications(false)} />}
     </>
   );
 };

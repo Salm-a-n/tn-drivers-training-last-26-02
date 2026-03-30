@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { 
-  LayoutDashboard, Users, CalendarDays, 
-  ReceiptIndianRupee, Bell, LogOut, Sun, Moon, 
-  ChevronLeft, Command
-} from "lucide-react";
 
 const InstructorSidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
@@ -68,38 +63,33 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
           shadow-[3px_0_16px_rgba(0,0,0,0.08)]
         `}
       >
-        {/* HEADER with logo and brand */}
-        <div className="p-4 pb-3 border-b border-slate-200 dark:border-slate-800 relative">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-teal-500 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="white">
-                <path d="M8 1L1 6v9h4v-5h6v5h4V6z"/>
-              </svg>
-            </div>
-            <div>
-              <div className="font-['Sora',system-ui] text-[0.88rem] font-extrabold tracking-[-0.01em] leading-tight">
-                <span className="text-slate-900 dark:text-white">TERRA </span>
-                <span className="text-teal-500">NOVA</span>
-              </div>
-              <div className="font-['DM_Sans',system-ui] text-[0.56rem] font-normal text-slate-400 dark:text-slate-500 tracking-[0.09em] uppercase mt-0.5">
-                Instructor Portal
-              </div>
-            </div>
+        {/* HEADER with logo */}
+        <div className="border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="w-54.5 h-15 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden bg-white dark:bg-white shadow-md">
+            <img 
+              src="/logo.webp" 
+              alt="Terra Nova Logo" 
+              className="w-70 h-20 object-contain p-1"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://ui-avatars.com/api/?name=TN&background=008B8B&color=fff&size=40";
+              }}
+            />
           </div>
           {/* Close button for mobile */}
           <button
             onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 md:hidden w-6 h-6 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all hover:rotate-90"
+            className="md:hidden w-6 h-6 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all hover:rotate-90 mr-3"
           >
             ✕
           </button>
         </div>
 
         {/* NAVIGATION with sections */}
-        <nav className="flex-1 overflow-y-auto py-2 px-2">
+        <nav className="flex-1 overflow-y-auto px-2">
           {Object.entries(groupedItems).map(([section, items]) => (
             <div key={section}>
-              <div className="text-[0.55rem] font-mono font-semibold tracking-[0.13em] uppercase text-slate-400 dark:text-slate-500 px-3 pt-4 pb-1.5">
+              <div className="text-[0.90rem] font-soro font-semibold tracking-[0.20rem] uppercase text-slate-400 dark:text-slate-500 px-3 pt-4 pb-1.5">
                 {section}
               </div>
               {items.map((item) => (
@@ -109,7 +99,7 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
                   end={item.path === "/instructor"}
                   onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[0.78rem] transition-all duration-200
+                    `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[1rem] transition-all duration-200
                     ${isActive 
                       ? "bg-teal-500 text-white shadow-sm font-semibold" 
                       : "text-slate-600 dark:text-slate-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-600 dark:hover:text-teal-400 hover:pl-4"
@@ -131,10 +121,10 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
           {/* Appearance Toggle */}
           <div className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors group">
             <div className="flex items-center gap-2.5">
-              <span className="text-[0.82rem] text-slate-500 dark:text-slate-400">
+              <span className="text-[1rem] text-slate-500 dark:text-slate-400">
                 {darkMode ? "🌙" : "☀️"}
               </span>
-              <span className="text-[0.78rem] font-medium text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400">
+              <span className="text-[1rem] font-medium text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400">
                 Appearance
               </span>
             </div>
@@ -151,6 +141,7 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
               />
             </button>
           </div>
+      
 
           {/* LOGOUT */}
           <button
@@ -161,7 +152,7 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
                        hover:bg-red-100 dark:hover:bg-red-900/40
                        transition-all duration-200 font-medium text-[0.78rem]"
           >
-            <span className="text-[0.82rem] w-4 text-center">↪</span>
+            <span className="text-[1rem] w-4 text-center">↪</span>
             <span>Terminate Session</span>
           </button>
         </div>

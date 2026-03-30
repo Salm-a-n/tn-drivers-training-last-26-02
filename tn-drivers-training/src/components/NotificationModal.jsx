@@ -142,7 +142,7 @@ const NotificationModal = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-0 sm:p-4">
       {/* Responsive Modal Container */}
-      <div className="w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-2xl bg-white dark:bg-slate-950 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 sm:slide-in-from-right sm:w-full sm:max-w-2xl lg:max-w-4xl xl:max-w-5xl">
+      <div className="w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-2xl bg-white dark:bg-slate-950 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 sm:slide-in-from-right sm:w-full sm:max-w-2xl lg:max-w-4xl xl:max-w-7xl">
         
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
@@ -154,7 +154,7 @@ const NotificationModal = ({ onClose }) => {
               <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">
                 Notifications
               </h2>
-              <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-[10px] sm:text-xs text-slate-800 dark:text-slate-400">
                 {unreadCount} unread • {notifications.length} total
               </p>
             </div>
@@ -174,7 +174,7 @@ const NotificationModal = ({ onClose }) => {
               onClick={onClose}
               className="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
             >
-              <X size={16} className="sm:w-[18px] sm:h-[18px] text-slate-400" />
+              <X size={16} className="sm:w-[18px] sm:h-[18px] text-slate-400 hover:text-red-500 " />
             </button>
           </div>
         </div>
@@ -196,7 +196,7 @@ const NotificationModal = ({ onClose }) => {
                 className={`px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-semibold uppercase tracking-wider transition-all whitespace-nowrap ${
                   filter === tab.id
                     ? 'bg-teal-600 text-white shadow-sm'
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-teal-600 border border-slate-200 dark:border-slate-700'
+                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-300 hover:text-teal-600 border border-slate-200 dark:border-slate-700'
                 }`}
               >
                 {tab.label}
@@ -210,13 +210,13 @@ const NotificationModal = ({ onClose }) => {
           {loading ? (
             <div className="py-20 text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-teal-500 border-t-transparent"></div>
-              <p className="text-sm text-slate-500 mt-3">Loading notifications...</p>
+              <p className="text-md text-slate-800 dark:text-slate-300 mt-43">Loading notifications...</p>
             </div>
           ) : paginatedNotifications.length === 0 ? (
             <div className="py-20 text-center">
               <Bell size={48} className="mx-auto text-slate-300 dark:text-slate-600 mb-4" />
               <p className="text-slate-500 dark:text-slate-400 font-bold text-base sm:text-lg">No notifications found</p>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">You're all caught up!</p>
+              <p className="text-md sm:text-sm text-slate-400 mt-1">You're all caught up!</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -235,30 +235,31 @@ const NotificationModal = ({ onClose }) => {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4">
                         <div className="flex-1">
-                          <p className={`text-sm sm:text-base font-semibold ${notification.is_read ? 'text-slate-600 dark:text-slate-400' : 'text-slate-800 dark:text-white'}`}>
+                          <p className={`text-sm md:text-md lg:text-lg xl:text-xl font-semibold ${notification.is_read ? 'text-slate-900 dark:text-slate-300' : 'text-slate-800 dark:text-white'}`}>
                             {notification.message}
                           </p>
                           {notification.data && Object.keys(notification.data).length > 0 && (
-                            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                            <div className="mt-2 text-xs text-slate-900 dark:text-slate-400 space-y-1">
                               {Object.entries(notification.data).map(([key, value]) => {
                                 const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                                 return (
                                   <div key={key} className="flex flex-wrap items-center gap-2">
-                                    <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{formattedKey}:</span>
-                                    <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">{String(value)}</span>
+                                    <span className="text-[10px] sm:text-[14px] xl:text-[16px] font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{formattedKey}:</span>
+                                    <span className="text-xs sm:text-sm lg:text-lg font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wider">{String(value)}</span>
                                   </div>
                                 );
                               })}
                             </div>
                           )}
                           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 sm:mt-3">
-                            <span className="text-[9px] sm:text-[10px] text-slate-400 flex items-center gap-1">
-                              <Clock size={10} />
+                            <span className="text-[11px] sm:text-[16px] text-slate-400 flex items-center gap-1">
+                              <Clock size={14} />
                               {notification.created_at}
                             </span>
                             {notification.read_at && (
-                              <span className="text-[9px] sm:text-[10px] text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                                <CheckCheck size={10} />
+                              <span className="text-[11px] sm:text-[16
+                              px] text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                                <CheckCheck size={14} />
                                 Read {notification.read_at}
                               </span>
                             )}
