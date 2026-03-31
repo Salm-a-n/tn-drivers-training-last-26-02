@@ -471,12 +471,16 @@ const MyExpenses = () => {
                 </button>
                 </div>
                 <div className="justify-end">
-                {exp.status === 'pending' && (
+                {exp.status === 'pending' ? (
                   <button 
                     onClick={() => startEditExpense(exp)} 
                     className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all"
                     title="Edit Claim"
                   >
+                    <Edit3 size={16} />
+                  </button>
+                ) : (
+                  <button className="p-2 text-gray-400 cursor-not-allowed rounded-lg transition-all" title="Cannot edit approved claim">
                     <Edit3 size={16} />
                   </button>
                 )}
