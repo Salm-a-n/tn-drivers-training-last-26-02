@@ -372,7 +372,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                        transition-all duration-200 font-medium text-[0.78rem]"
           >
             <span className="text-[1rem] w-4 text-center">↪</span>
-            <span>Terminate Session</span>
+            <span className="text-xs md:text-lg">LogOut</span>
           </button>
         </div>
       </aside>

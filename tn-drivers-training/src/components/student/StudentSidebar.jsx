@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const InstructorSidebar = ({ isOpen, setIsOpen }) => {
+const API_BASE = "http://localhost:8000/api/student";
+
+const StudentSidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
@@ -19,19 +23,44 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
     }
   }, [darkMode]);
 
-  const handleLogout = () => {
-    console.log("Instructor logged out");
-    navigate("/login");
-    setIsOpen(false);
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      const token = localStorage.getItem('access_token');
+      
+      // Call logout API
+      await axios.post(`${API_BASE}/logout`, {}, {
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        }
+      });
+      
+      // Clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      
+      // Redirect to login
+      navigate("/login");
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if API fails, clear local storage and redirect
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      navigate("/login");
+    } finally {
+      setLoggingOut(false);
+      setIsOpen(false);
+    }
   };
 
-  const menuItems = [
-    { name: "Dashboard", icon: "⊞", path: "/instructor", section: "Main" },
-    { name: "My Students", icon: "👤", path: "/instructor/students", section: "Main" },
-    { name: "Schedule", icon: "📅", path: "/instructor/schedule", section: "Main" },
-    { name: "My Expenses", icon: "🧾", path: "/instructor/expenses", section: "Finance" },
-    { name: "Notifications", icon: "🔔", path: "/instructor/notifications", section: "System" },
-  ];
+ const menuItems = [
+  { name: "Dashboard", icon: "⊞", path: "/student", section: "Main" },
+  { name: "My Profile", icon: "👤", path: "/student/profile", section: "Main" },
+  { name: "Tests & Evaluations", icon: "📋", path: "/student/test&Evaluation", section: "Main" },
+  { name: "My Packages", icon: "📦", path: "/student/Packages", section: "Learning" },
+  { name: "Notifications", icon: "🔔", path: "/student/notifications", section: "System" },
+];
 
   // Group menu items by section
   const groupedItems = menuItems.reduce((acc, item) => {
@@ -96,7 +125,7 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
                 <NavLink
                   key={item.name}
                   to={item.path}
-                  end={item.path === "/instructor"}
+                  end={item.path === "/student"}
                   onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-2.5 px-3 py-2 my-0.5 rounded-md font-medium text-[1rem] transition-all duration-200
@@ -142,18 +171,24 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
             </button>
           </div>
       
-
           {/* LOGOUT */}
           <button
             onClick={handleLogout}
+            disabled={loggingOut}
             className="mt-2 w-full flex items-center gap-2.5 px-3 py-2 rounded-md
                        bg-red-50 dark:bg-red-900/20
                        text-red-600 dark:text-red-400
                        hover:bg-red-100 dark:hover:bg-red-900/40
-                       transition-all duration-200 font-medium text-[0.78rem]"
+                       transition-all duration-200 font-medium text-[0.78rem]
+                       disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="text-[1rem] w-4 text-center">↪</span>
-            <span className="text-xs md:text-lg">LogOut</span>
+            <span className="text-[1rem] w-4 text-center">
+              {loggingOut ? "⏳" : "↪"}
+            </span>
+            <span className="text-xs md:text-lg">{loggingOut ? "Logging out..." : "LogOut"}</span>
+            {loggingOut && (
+              <div className="ml-auto w-3 h-3 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+            )}
           </button>
         </div>
       </aside>
@@ -161,4 +196,4 @@ const InstructorSidebar = ({ isOpen, setIsOpen }) => {
   );
 };
 
-export default InstructorSidebar;
+export default StudentSidebar;

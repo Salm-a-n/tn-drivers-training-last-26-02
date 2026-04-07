@@ -199,8 +199,7 @@ export default function InstructorStudentDetail({ student = dummyStudent, onClos
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-slate-950 w-full max-w-7xl rounded-2 max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
-        
+<div className="bg-white dark:bg-slate-950 w-full max-w-7xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden h-[90vh] max-h-[90vh]">        
         {/* HEADER */}
         <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
           <div className="flex items-center gap-3 sm:gap-4">

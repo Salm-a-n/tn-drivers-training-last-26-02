@@ -57,6 +57,15 @@ const Login = () => {
           navigate('/instructor');
         }, 1500);
       } 
+      else if (email === 'student@gmail.com') {
+        setSuccess('Login successful! Redirecting to Instructor Dashboard...');
+        localStorage.setItem('access_token', 'fake-instructor-token');
+        localStorage.setItem('user', JSON.stringify({ email, role: 'student', name: 'student name ' }));
+        
+        setTimeout(() => {
+          navigate('/student');
+        }, 1500);
+      }
       else {
         setError('Invalid email or password. Use admin@gmail.com or instructor@gmail.com');
         setLoading(false);

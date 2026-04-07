@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import InstructorLayout from "../layouts/InstructorLayout";
+import StudentLayout from "../layouts/StudentLayout";
 
 // Admin Pages
 import Dashboard from "../pages/Dashboard";
@@ -18,14 +19,20 @@ import LandingPage from "../pages/LandingPage";
 import ResetPassword from "../pages/ResetPassword";
 import RegistrationPage from "../pages/RegistrationPage";
 
-// ... other admin imports
-
 // Instructor Pages
 import InstructorDashboard from "../pages/instructor/Dashboard";
 import MyStudents from "../pages/instructor/MyStudents";
 import NotificationPage from "../pages/instructor/NotificationPage";
 import InstructorSchedule from "../pages/instructor/MySchedule";
 import InstructorExpenses from "../pages/instructor/MyExpenses";
+
+// Student Pages
+import StudentProfile from "../pages/student/StudentProfile";
+import StudentDashboard from "../pages/student/StudentDashboard";
+import MyPackages from "../pages/student/MyPackages";
+import StudentNotificationPage from "../pages/student/StudentNotification";
+import TestEvaluationPage from "../pages/student/TestEvaluate";
+// import StudentSchedule from "../pages/student/StudentSchedule";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/register" element={<RegistrationPage/>}/>
+      
       {/* ADMIN ROUTES */}
       <Route element={<AdminLayout />}>
         <Route path="/Dashboard" element={<Dashboard />} />
@@ -50,15 +58,21 @@ const AppRoutes = () => {
 
       {/* INSTRUCTOR ROUTES */}
       <Route path="/instructor" element={<InstructorLayout />}>
-        <Route index element={<InstructorDashboard />} /> {/* /instructor */}
-        <Route path="/instructor/Students" element={<MyStudents />} />
-        <Route path="/instructor/Notifications" element={<NotificationPage />} />
-        <Route path="/instructor/Schedule" element={<InstructorSchedule />} />
-        <Route path="/instructor/Expenses" element={<InstructorExpenses />} />
+        <Route index element={<InstructorDashboard />} />
+        <Route path="students" element={<MyStudents />} />
+        <Route path="notifications" element={<NotificationPage />} />
+        <Route path="schedule" element={<InstructorSchedule />} />
+        <Route path="expenses" element={<InstructorExpenses />} />
       </Route>
 
-      {/* LOGIN ROUTE (Outer - no sidebar) */}
-      {/* <Route path="/login" element={<Login />} /> */}
+      {/* STUDENT ROUTES */}
+      <Route path="/student" element={<StudentLayout />}>
+        <Route index element={<StudentDashboard />} />
+         <Route path="profile" element={<StudentProfile />} />
+         <Route path="packages" element={<MyPackages />} />
+         <Route path="notifications" element={<StudentNotificationPage />} /> 
+        <Route path="test&Evaluation" element={<TestEvaluationPage />} />
+      </Route>
     </Routes>
   );
 };
